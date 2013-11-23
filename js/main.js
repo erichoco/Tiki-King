@@ -144,7 +144,9 @@ function createCards() {
                 }
             }
             if (animStep === 1) {
-                if (lower.y === upperY) {
+                if (lower.y <= upperY) {
+                    lower.y = upperY;
+                    upper.y = lowerY;
                     animStep = 2;
                 }
                 else {
@@ -153,7 +155,9 @@ function createCards() {
                 }
             }
             if (animStep === 2) {
-                if (lower.x === upperX) {
+                if (lower.x >= upperX) {
+                    lower.x = upperX;
+                    upper.x = lowerX;
                     animStep = 3;
                 }
                 else {
