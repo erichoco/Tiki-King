@@ -18,12 +18,19 @@ $(document).ready(function() {
         console.log("Test it");
         test();
         console.log("change color");
-        tikiColor[0] = 'yellow';
 
 });
 
 function test() {
     console.log("test function");
+}
+
+function getAction() {
+    
+}
+
+function updateState() {
+
 }
 
 

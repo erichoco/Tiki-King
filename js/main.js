@@ -7,6 +7,9 @@ var hasSelected;
 var tikiWidth = 0, tikiHeight = 0;
 var tikiColor = ['blue', 'green', 'yellow', 'orange', 'red'];
 
+var upCardRemain = 2, killCardRemain = 2;
+
+
 $(document).ready(function() {
         startCanvas();
         createCards();
@@ -92,8 +95,40 @@ function startCanvas() {
 }
 
 function createCards() {
-    $('#card-wrapper li').append('<div class="cards">Card</div>');
-    $('#card-wrapper li div').on('click', function() {
+    $('#card-wrapper li').append('<div class="cards"></div>');
+
+    var cards = $('#card-wrapper .cards');
+
+    cards.eq(0).text('Up 1').on('click', function() {
+        upCardRemain--;
+        console.log('Up 1');
+        if (0 === killCardRemain) {
+            $(this).css('opacity', '0.6').unbind('click');
+        }
+    });
+    cards.eq(1).text('Up 2').on('click', function() {
+        console.log('Up 2');
+        console.log($(this));
+        $(this).css('opacity', '0.6').unbind('click');
+    });
+    cards.eq(2).text('Up 3').on('click', function() {
+        console.log('Up 3');
+        $(this).css('opacity', '0.6').unbind('click');
+    })
+    cards.eq(3).text('Push!').on('click', function() {
+        console.log('Push!');
+        $(this).css('opacity', '0.6').unbind('click');
+    })
+    cards.eq(4).text('Kill!').on('click', function() {
+        killCardRemain--;
+        console.log('Kill!');
+        if (0 === killCardRemain) {
+            $(this).css('opacity', '0.6').unbind('click');
+        }
+    });
+
+
+    /*$('#card-wrapper li div').on('click', function() {
 
         //var targetIdx = Math.floor(Math.random() * (tikis.length-1)) + 1;
         if (null === selectedTiki) {
@@ -114,8 +149,6 @@ function createCards() {
             upper = tikis[targetIdx - 1];
             lower = selectedTiki;
         }
-        /*var upper = tikis[targetIdx - 1];
-        var lower = tikis[targetIdx];*/
         tikis[targetIdx - 1] = lower;
         tikis[targetIdx] = upper;
         console.log(upper);
@@ -171,7 +204,7 @@ function createCards() {
 
             stage.update(event);
         }
-    });
+    });*/
 }
 
 })();
