@@ -27,6 +27,7 @@ function test() {
 }
 
 
+
 // This is the 'class' of State
 function State() {
     this.myActions = [0, 0, 1, 2, 3, 4, 4]; // actions remained

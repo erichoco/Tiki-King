@@ -3,21 +3,29 @@
 var stage;
 var tikis; // save all canvas objects of tikis
 
-var selectedTiki;
 var selectedTikiIdx;
 var hasSelected; // Boolean
+var selectMark;
 
 var tikiWidth = 0, tikiHeight = 0;
 //var tikiColor = ['blue', 'green', 'yellow', 'orange', 'red'];
-var tikiColor = ['orange', 'orange', 'orange', 'orange',
-'orange', 'orange', 'orange', 'orange', 'orange'];
+var tikiColor = ['green', 'green', 'green', 'green',
+'green', 'green', 'green', 'green', 'green'];
 
 var upCardRemain = 2, killCardRemain = 2;
 
 $(document).ready(function() {
-        startCanvas();
-        createCards();
-    });
+    startCanvas();
+    createCards();
+
+    // Initial global variables in animation.js
+    animStage = stage;
+    animTikis = tikis;
+    animTikiWidth = tikiWidth;
+    animTikiHeight = tikiHeight;
+    //console.log(tikis);
+    console.log(animTikis);
+});
 
 function startCanvas() {
 
@@ -40,9 +48,9 @@ function startCanvas() {
 
     var circleMark = new createjs.Graphics();
         circleMark.setStrokeStyle(1).beginFill('#FFFFFF').drawCircle(0, 0, 3);
-    var selectMark = new createjs.Shape(circleMark);
+    selectMark = new createjs.Shape(circleMark);
 
-    selectedTiki = selectedTikiIdx = null;
+    selectedTikiIdx = null;
     hasSelected = false;
     for (var i = 0; i < tikiColor.length; ++i) {
         var tiki = new createjs.Shape();
@@ -70,20 +78,18 @@ function startCanvas() {
             }
         });
         tiki.addEventListener('click', function(evt) {
-            if (null === selectedTiki) {
-                selectedTiki = evt.target;
-                selectedTikiIdx = tikis.indexOf(selectedTiki);
+            if (!hasSelected) {
+                selectedTikiIdx = tikis.indexOf(evt.target);
                 hasSelected = true;
             }
             else {
                 stage.removeChild(selectMark);
-                if (evt.target === selectedTiki) {
-                    selectedTiki = selectedTikiIdx = null;
+                if (evt.target === tikis[selectedTikiIdx]) {
+                    selectedTikiIdx = null;
                     hasSelected = false;
                 }
                 else {
-                    selectedTiki = evt.target;
-                    selectedTikiIdx = tikis.indexOf(selectedTiki);
+                    selectedTikiIdx = tikis.indexOf(evt.target);
                     selectMark.x = evt.target.x + 10;
                     selectMark.y = evt.target.y + 10;
                     stage.addChild(selectMark);
@@ -105,35 +111,72 @@ function createCards() {
     var cards = $('#card-wrapper .cards');
 
     cards.eq(0).text('Up 1').on('click', function() {
-        if (null === selectedTikiIdx) return;
+        if (!hasSelected) return;
+        if (0 >= selectedTikiIdx) {
+            alert('Cannot move the first Tiki!');
+            return;
+        }
+
         updateState(0, selectedTikiIdx, 1);
+        tikis = moveUp(selectedTikiIdx, 1);
 
         upCardRemain--;
-        //console.log('Up 1');
         if (0 === upCardRemain) {
             $(this).css('opacity', '0.6').unbind('click');
         }
+
+        stage.removeChild(selectMark);
+        hasSelected = false;
+        selectedTikiIdx = null;
     });
     cards.eq(1).text('Up 2').on('click', function() {
-        if (null === selectedTikiIdx) return;
-        //console.log('Up 2');
+        if (!hasSelected) return;
+        if (1 >= selectedTikiIdx) {
+            alert('Cannot move Tiki!');
+            return;
+        }
+
         updateState(1, selectedTikiIdx, 1);
+        tikis = moveUp(selectedTikiIdx, 2);
+
         $(this).css('opacity', '0.6').unbind('click');
+
+        stage.removeChild(selectMark);
+        hasSelected = false;
+        selectedTikiIdx = null;
     });
     cards.eq(2).text('Up 3').on('click', function() {
-        if (null === selectedTikiIdx) return;
-        //console.log('Up 3');
+        if (!hasSelected) return;
+        if (2 >= selectedTikiIdx) {
+            alert('Cannot move Tiki!');
+            return;
+        }
+
         updateState(2, selectedTikiIdx, 1);
+        tikis = moveUp(selectedTikiIdx, 3);
+
         $(this).css('opacity', '0.6').unbind('click');
+
+        stage.removeChild(selectMark);
+        hasSelected = false;
+        selectedTikiIdx = null;
     })
     cards.eq(3).text('Push!').on('click', function() {
-        if (null === selectedTikiIdx) return;
+        if (!hasSelected) return;
+        if (-1 === selectedTikiIdx) {
+            alert('Please select again');
+            return;
+        }
+        stage.removeChild(selectMark);
+        hasSelected = false;
+        selectedTikiIdx = null;
         //console.log('Push!');
         updateState(3, selectedTikiIdx, 1);
         $(this).css('opacity', '0.6').unbind('click');
     })
     cards.eq(4).text('Kill!').on('click', function() {
-        if (null === selectedTikiIdx) return;
+        //if (!hasSelected) return;
+
         killCardRemain--;
         //console.log('Kill!');
         updateState(4, selectedTikiIdx, 1);
