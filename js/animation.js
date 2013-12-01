@@ -11,14 +11,17 @@ function moveUp(targetIdx, k) {
     console.log(animTikis);
     var upper, lower;
     
-    upper = animTikis[targetIdx - k];
+    upper = animTikis.slice(targetIdx - k, targetIdx);
     lower = animTikis[targetIdx];
 
     animTikis[targetIdx - k] = lower;
-    animTikis[targetIdx] = upper;
+    for (var i = 0; i < upper.length; ++i) {
+        animTikis[targetIdx - k + 1 + i] = upper[i];
+    }
+    //animTikis[targetIdx] = upper;
     console.log(upper);
     console.log(lower);
-    var upperX = upper.x, upperY = upper.y;
+    var upperX = upper[0].x, upperY = upper[0].y;
     var lowerX = lower.x, lowerY = lower.y;
     var animStep = 0;
 
@@ -28,33 +31,39 @@ function moveUp(targetIdx, k) {
 
     function tick(event) {
         if (animStep === 0) {
-            if (lowerX - lower.x > animTikiWidth / 2 + 1) {
+            if (lowerX - lower.x > animTikiWidth + 1) {
                 animStep = 1;
             } 
             else {
-                upper.x = upper.x + animTikiWidth / 5;
+                //upper.x = upper.x + animTikiWidth / 5;
                 lower.x = lower.x - animTikiWidth / 5;
             }
         }
         if (animStep === 1) {
             if (lower.y <= upperY) {
                 lower.y = upperY;
-                upper.y = lowerY;
+                for (var i = 0; i < upper.length; ++i) {
+                    upper[i].y = upperY + (lowerY - upperY) / k * (i + 1);
+                }
+                //upper.y = lowerY;
                 animStep = 2;
             }
             else {
-                upper.y = upper.y + (lowerY - upperY) / 10;
+                for (var i = 0; i < upper.length; ++i) {
+                    upper[i].y = upper[i].y + (lowerY - upperY) / 10 / k;
+                }
+                //upper.y = upper.y + (lowerY - upperY) / 10;
                 lower.y = lower.y - (lowerY - upperY) / 10;
             }
         }
         if (animStep === 2) {
             if (lower.x >= upperX) {
                 lower.x = upperX;
-                upper.x = lowerX;
+                //upper.x = lowerX;
                 animStep = 3;
             }
             else {
-                upper.x = upper.x - animTikiWidth / 5;
+                //upper.x = upper.x - animTikiWidth / 5;
                 lower.x = lower.x + animTikiWidth / 5;
             }
         }
