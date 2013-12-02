@@ -175,13 +175,17 @@ function createCards() {
         selectedTikiIdx = null;
     })
     cards.eq(4).text('Kill!').on('click', function() {
-        //if (!hasSelected) return;
-
         killCardRemain--;
 
-        updateState(4, selectedTikiIdx, 1);
+        updateState(4, tikis.length - 1, 1);
+        
         if (0 === killCardRemain) {
             $(this).css('opacity', '0.6').unbind('click');
+        }
+        if (hasSelected) {
+            stage.removeChild(selectMark);
+            hasSelected = false;
+            selectedTikiIdx = null;
         }
     });
 
