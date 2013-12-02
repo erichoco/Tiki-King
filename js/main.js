@@ -167,18 +167,18 @@ function createCards() {
             alert('Please select again');
             return;
         }
+        updateState(3, selectedTikiIdx, 1);
+        
+        $(this).css('opacity', '0.6').unbind('click');
         stage.removeChild(selectMark);
         hasSelected = false;
         selectedTikiIdx = null;
-        //console.log('Push!');
-        updateState(3, selectedTikiIdx, 1);
-        $(this).css('opacity', '0.6').unbind('click');
     })
     cards.eq(4).text('Kill!').on('click', function() {
         //if (!hasSelected) return;
 
         killCardRemain--;
-        //console.log('Kill!');
+
         updateState(4, selectedTikiIdx, 1);
         if (0 === killCardRemain) {
             $(this).css('opacity', '0.6').unbind('click');
