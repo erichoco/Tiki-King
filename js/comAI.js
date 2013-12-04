@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 });
 
-function test() {
+function test(ggg) {
     console.log("test function");
 }
 
@@ -60,6 +60,8 @@ function updateState(action, tikiIdx, player) {
         state.opActions.splice(idx, 1);
         console.log('This is AI do the action')
 
+
+        
         if (action == 0)
           updateStateWithMoveup(1,tikiIdx);
         else if (action == 1)
@@ -70,15 +72,19 @@ function updateState(action, tikiIdx, player) {
           updateStateWithPush(tikiIdx);
         else if (action ==4)
           updateStateWithKill();       
-            
-        console.log('New Tiki order is ' ,state.tikiOrder)
+        
+        
+        var currentState = state.tikiOrder.slice();    
+        evaluationFunction(currentState);
+        if(currentState[0] == 7)
+            console.log('update currentState!')
         
     }
     else {
         console.log('ERROR: invalid "player" passed to updateState()')
     }
 
-    console.log('Updated State:', state);
+    console.log('Updated State:', state.tikiOrder);
 }
 
 function updateStateWithMoveup(moveup , tikiIdx)
@@ -86,7 +92,6 @@ function updateStateWithMoveup(moveup , tikiIdx)
     tmp = state.tikiOrder[tikiIdx];       
         moveTime = 0;
         while(moveTime<moveup){
-            console.log(moveTime);
             index = tikiIdx - moveTime;
             state.tikiOrder[index] = state.tikiOrder[index-1];
             moveTime +=1;
@@ -118,9 +123,30 @@ function updateStateWithKill()
 
 }
 
+function evaluationFunction(currentState)
+{
+    score = 0 ;
+    distance = 0 ;
+    
+    
+
+}
+
+// used for get mission target 's idx'
+function getIdxInTikiOrder(key)
+{
+    for(i = 0 ; i < state.tikiNumber; i++)
+        if(state.tikiOrder[i] == key)
+            {index = i; return index; }
+
+    console.log('Error! the key ', key , 'is not in tikiOrder!');
+
+
+}
 
 
 function comAIMove() {
 
     console.log('Computer AI turn');
 }
+
