@@ -140,6 +140,7 @@ function getIdxInTikiOrder(key)
 
 
 function comAIMove() {
+
     console.log('Computer AI turn');
 }
 
