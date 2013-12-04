@@ -42,7 +42,7 @@ function State() {
  *
  * action: index of new action (card used)
  * tikiIdx: tiki index on which the action applied
- * player: play who conducts the action (0: AI, 1: human player)
+ * player: player who conducts the action (0: AI, 1: human player)
  */
 function updateState(action, tikiIdx, player) {
     console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
@@ -116,4 +116,10 @@ function updateStateWithKill()
          tmp[i] = state.tikiOrder[i];
     state.tikiOrder = tmp.slice(); 
 
+}
+
+
+
+function comAIMove() {
+    console.log('Computer AI turn');
 }

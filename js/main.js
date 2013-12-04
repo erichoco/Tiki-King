@@ -128,6 +128,8 @@ function createCards() {
         stage.removeChild(selectMark);
         hasSelected = false;
         selectedTikiIdx = null;
+
+        comAIMove();
     });
     cards.eq(1).text('Up 2').on('click', function() {
         if (!hasSelected) return;
@@ -144,6 +146,8 @@ function createCards() {
         stage.removeChild(selectMark);
         hasSelected = false;
         selectedTikiIdx = null;
+
+        comAIMove();
     });
     cards.eq(2).text('Up 3').on('click', function() {
         if (!hasSelected) return;
@@ -160,6 +164,8 @@ function createCards() {
         stage.removeChild(selectMark);
         hasSelected = false;
         selectedTikiIdx = null;
+
+        comAIMove();
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -173,6 +179,8 @@ function createCards() {
         stage.removeChild(selectMark);
         hasSelected = false;
         selectedTikiIdx = null;
+
+        comAIMove();
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
@@ -187,6 +195,8 @@ function createCards() {
             hasSelected = false;
             selectedTikiIdx = null;
         }
+
+        comAIMove();
     });
 
 
