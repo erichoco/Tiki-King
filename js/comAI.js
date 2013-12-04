@@ -121,5 +121,6 @@ function updateStateWithKill()
 
 
 function comAIMove() {
+
     console.log('Computer AI turn');
 }
