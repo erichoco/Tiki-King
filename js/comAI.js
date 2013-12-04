@@ -103,23 +103,19 @@ function updateStateWithPush(tikiIdx)
 {
     tmp = state.tikiOrder[tikiIdx]; 
     index = tikiIdx
-    while(index<state.tikiNumber-1){
+    while(index<state.tikiOrder.length-1){
         state.tikiOrder[index] = state.tikiOrder[index+1];
         index +=1;
     }
 
-    state.tikiOrder[state.tikiNumber-1] = tmp;
+    state.tikiOrder[state.tikiOrder.length-1] = tmp;
 
 }
 
 function updateStateWithKill()
 {
 
-    tmp = new Array();
-    state.tikiNumber-=1;
-    for(i = 0 ; i < state.tikiNumber;i++)
-         tmp[i] = state.tikiOrder[i];
-    state.tikiOrder = tmp.slice(); 
+    state.tikiOrder.pop();
 
 }
 
@@ -128,14 +124,12 @@ function evaluationFunction(currentState)
     score = 0 ;
     distance = 0 ;
     
-    
-
 }
 
 // used for get mission target 's idx'
 function getIdxInTikiOrder(key)
 {
-    for(i = 0 ; i < state.tikiNumber; i++)
+    for(i = 0 ; i < state.tikiOrder.length; i++)
         if(state.tikiOrder[i] == key)
             {index = i; return index; }
 
