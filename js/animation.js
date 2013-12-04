@@ -8,7 +8,7 @@ var animanimTikiWidth, animTikiHeight;
  * k: # of position moving up
  */
 function moveUp(targetIdx, k) {
-    console.log(animTikis);
+    //console.log(animTikis);
     var upper, lower;
     
     upper = animTikis.slice(targetIdx - k, targetIdx);
@@ -19,8 +19,8 @@ function moveUp(targetIdx, k) {
         animTikis[targetIdx - k + 1 + i] = upper[i];
     }
     //animTikis[targetIdx] = upper;
-    console.log(upper);
-    console.log(lower);
+    //console.log(upper);
+    //console.log(lower);
     var upperX = upper[0].x, upperY = upper[0].y;
     var lowerX = lower.x, lowerY = lower.y;
     var animStep = 0;

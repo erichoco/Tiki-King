@@ -42,7 +42,7 @@ function State() {
  *
  * action: index of new action (card used)
  * tikiIdx: tiki index on which the action applied
- * player: play who conducts the action (0: AI, 1: human player)
+ * player: player who conducts the action (0: AI, 1: human player)
  */
 function updateState(action, tikiIdx, player) {
     console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
@@ -128,9 +128,6 @@ function evaluationFunction(currentState)
     score = 0 ;
     distance = 0 ;
     
-
-
-    
     
 
 }
@@ -145,5 +142,10 @@ function getIdxInTikiOrder(key)
     console.log('Error! the key ', key , 'is not in tikiOrder!');
 
 
+}
+
+
+function comAIMove() {
+    console.log('Computer AI turn');
 }
 
