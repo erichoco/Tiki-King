@@ -124,6 +124,7 @@ function createCards() {
         }
 
         stage.removeChild(selectMark);
+        stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
@@ -142,6 +143,7 @@ function createCards() {
         $(this).css('opacity', '0.6').unbind('click');
 
         stage.removeChild(selectMark);
+        stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
@@ -160,6 +162,7 @@ function createCards() {
         $(this).css('opacity', '0.6').unbind('click');
 
         stage.removeChild(selectMark);
+        stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
@@ -172,9 +175,11 @@ function createCards() {
             return;
         }
         updateState(3, selectedTikiIdx, 1);
+        moveToBottom(selectedTikiIdx);
         
         $(this).css('opacity', '0.6').unbind('click');
         stage.removeChild(selectMark);
+        stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
@@ -184,12 +189,15 @@ function createCards() {
         killCardRemain--;
 
         updateState(4, tikis.length - 1, 1);
+        killLast();
+        console.log(tikis);
         
         if (0 === killCardRemain) {
             $(this).css('opacity', '0.6').unbind('click');
         }
         if (hasSelected) {
             stage.removeChild(selectMark);
+            stage.update();
             hasSelected = false;
             selectedTikiIdx = null;
         }
