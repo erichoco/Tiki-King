@@ -5,28 +5,13 @@
 
 //var target
 
-
 //getAIAction(action) // for main.js to call
 //miniMax()
 //evaluation function()
 //updateState(action) // for main.js to call
 
+
 var state = new State();
-
-
-$(document).ready(function() {
-
-        console.log("Test it");
-        test();
-        console.log("change color");
-
-});
-
-function test(ggg) {
-    console.log("test function");
-}
-
-
 
 // This is the 'class' of State
 function State() {
@@ -46,9 +31,6 @@ function State() {
 function updateState(action, tikiIdx, player) {
     console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
 
-    // Adjust tiki order here
-
-
     if (0 === player) {
         var idx = state.myActions.indexOf(action);
         state.myActions.splice(idx, 1);
@@ -61,24 +43,23 @@ function updateState(action, tikiIdx, player) {
 
 
         
-        if (action == 0)
-          updateStateWithMoveup(1,tikiIdx);
-        else if (action == 1)
-          updateStateWithMoveup(2,tikiIdx);
-        else if (action == 2)
-          updateStateWithMoveup(3,tikiIdx); 
-        else if (action == 3)
-          updateStateWithPush(tikiIdx);
-        else if (action ==4)
-          updateStateWithKill();       
-        
-        
-        var currentState = state.tikiOrder.slice();    
-        evaluationFunction(currentState);
-        if(currentState[0] == 7)
-            console.log('update currentState!')
-        
+    if (action == 0)
+        updateStateWithMoveup(1,tikiIdx);
+    else if (action == 1)
+        updateStateWithMoveup(2,tikiIdx);
+    else if (action == 2)
+        updateStateWithMoveup(3,tikiIdx); 
+    else if (action == 3)
+        updateStateWithPush(tikiIdx);
+    else if (action ==4)
+        updateStateWithKill();
+
+    var currentState = state.tikiOrder.slice();
+    evaluationFunction(currentState);
+    if(currentState[0] == 7)
+        console.log('update currentState!');
     }
+
     else {
         console.log('ERROR: invalid "player" passed to updateState()')
     }
@@ -88,14 +69,14 @@ function updateState(action, tikiIdx, player) {
 
 function updateStateWithMoveup(moveup , tikiIdx)
 {
-    tmp = state.tikiOrder[tikiIdx];       
-        moveTime = 0;
-        while(moveTime<moveup){
-            index = tikiIdx - moveTime;
-            state.tikiOrder[index] = state.tikiOrder[index-1];
-            moveTime +=1;
-        }
-        state.tikiOrder[tikiIdx - moveup] = tmp;
+    tmp = state.tikiOrder[tikiIdx];
+    moveTime = 0;
+    while(moveTime<moveup){
+        index = tikiIdx - moveTime;
+        state.tikiOrder[index] = state.tikiOrder[index-1];
+        moveTime +=1;
+    }
+    state.tikiOrder[tikiIdx - moveup] = tmp;
 }
 
 function updateStateWithPush(tikiIdx)
@@ -114,6 +95,7 @@ function updateStateWithPush(tikiIdx)
 function updateStateWithKill()
 {
 
+
     state.tikiOrder.pop();
 
 }
@@ -122,15 +104,18 @@ function evaluationFunction(currentState)
 {
     score = 0 ;
     distance = 0 ;
+
     
 }
 
 // used for get mission target 's idx'
 function getIdxInTikiOrder(key)
 {
+
     for(i = 0 ; i < state.tikiOrder.length; i++)
         if(state.tikiOrder[i] == key)
             {index = i; return index; }
+
 
     console.log('Error! the key ', key , 'is not in tikiOrder!');
 
@@ -139,7 +124,6 @@ function getIdxInTikiOrder(key)
 
 
 function comAIMove() {
-
     console.log('Computer AI turn');
 }
 
