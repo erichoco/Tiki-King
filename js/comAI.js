@@ -34,15 +34,14 @@ function updateState(action, tikiIdx, player) {
     if (0 === player) {
         var idx = state.myActions.indexOf(action);
         state.myActions.splice(idx, 1);
-        console.log('This is player do the action')
+        console.log('This is AI do the action')
     }
     else if (1 === player) {
         var idx = state.opActions.indexOf(action);
         state.opActions.splice(idx, 1);
-        console.log('This is AI do the action')
+        console.log('This is human do the action')
 
-
-        
+      
     if (action == 0)
         updateStateWithMoveup(1,tikiIdx);
     else if (action == 1)
@@ -54,76 +53,94 @@ function updateState(action, tikiIdx, player) {
     else if (action ==4)
         updateStateWithKill();
 
-    var currentState = state.tikiOrder.slice();
-    evaluationFunction(currentState);
-    if(currentState[0] == 7)
-        console.log('update currentState!');
     }
 
     else {
         console.log('ERROR: invalid "player" passed to updateState()')
     }
 
-    console.log('Updated State:', state.tikiOrder);
+    console.log('Updated State:', state.tikiOrder)
 }
 
 function updateStateWithMoveup(moveup , tikiIdx)
 {
-    tmp = state.tikiOrder[tikiIdx];
-    moveTime = 0;
+    tmp = state.tikiOrder[tikiIdx]
+    moveTime = 0
     while(moveTime<moveup){
-        index = tikiIdx - moveTime;
-        state.tikiOrder[index] = state.tikiOrder[index-1];
-        moveTime +=1;
+        index = tikiIdx - moveTime
+        state.tikiOrder[index] = state.tikiOrder[index-1]
+        moveTime +=1
     }
-    state.tikiOrder[tikiIdx - moveup] = tmp;
+    state.tikiOrder[tikiIdx - moveup] = tmp
 }
 
 function updateStateWithPush(tikiIdx)
 {
-    tmp = state.tikiOrder[tikiIdx]; 
+    tmp = state.tikiOrder[tikiIdx]
     index = tikiIdx
     while(index<state.tikiOrder.length-1){
-        state.tikiOrder[index] = state.tikiOrder[index+1];
-        index +=1;
+        state.tikiOrder[index] = state.tikiOrder[index+1]
+        index +=1
     }
 
-    state.tikiOrder[state.tikiOrder.length-1] = tmp;
+    state.tikiOrder[state.tikiOrder.length-1] = tmp
 
 }
 
 function updateStateWithKill()
 {
 
-
-    state.tikiOrder.pop();
+    state.tikiOrder.pop()
 
 }
 
 function evaluationFunction(currentState)
 {
-    score = 0 ;
-    distance = 0 ;
+    var score = 0 
+    var distance = 0  
+    var idx
+    console.log('missionTarget length is ' , state.missionTarget.length)
 
+    
+    for( var i = 0 ; i < state.missionTarget.length ; i++){
+      
+      idx = gettikiIdx(state.missionTarget[i]);
+      distance += Math.abs(idx-i);
+      if(idx <= i)
+        {
+
+            if (i == 0) score+=9
+            else if (i == 1) score+=5
+            else if (i == 2) score +=2
+            console.log('Score is ' , score)
+        }
+    }
+
+    return score*10 - distance
+     
+}
+
+
+function comAIMove() 
+{
+    console.log('Computer AI turn')
+
+
+    score = evaluationFunction(state)
+    console.log('The state\'s score is ' , score )
     
 }
 
-// used for get mission target 's idx'
-function getIdxInTikiOrder(key)
+function gettikiIdx(tikiIdx)
 {
+    var idx = 0;
+    for(var i = 0 ; i < state.tikiOrder.length ; i++)
+        if (state.tikiOrder[i] == tikiIdx)
+            {idx = i ;
+            return idx;}
 
-    for(i = 0 ; i < state.tikiOrder.length; i++)
-        if(state.tikiOrder[i] == key)
-            {index = i; return index; }
-
-
-    console.log('Error! the key ', key , 'is not in tikiOrder!');
-
-
+     console.log('Error! the tikiOrder ', tikiOrder , ' , which is not in tikiOrder!')
 }
 
 
-function comAIMove() {
-    console.log('Computer AI turn');
-}
 
