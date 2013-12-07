@@ -105,7 +105,6 @@ function evaluationFunction(currentState)
     for( var i = 0 ; i < state.missionTarget.length ; i++){
       
       idx = gettikiIdx(state.missionTarget[i]);
-      distance += Math.abs(idx-i);
       if(idx <= i)
         {
 
@@ -114,6 +113,7 @@ function evaluationFunction(currentState)
             else if (i == 2) score +=2
             console.log('Score is ' , score)
         }
+      else distance += Math.abs(idx-i);
     }
 
     return score*10 - distance
