@@ -1,17 +1,7 @@
 /* Implement AI here */
 
-//class state
-// remaining action , Tiki Order , 
-
-//var target
-
-//getAIAction(action) // for main.js to call
-//miniMax()
-//evaluation function()
-//updateState(action) // for main.js to call
-
-
 var state = new State();
+console.log("AI's target", state.missionTarget);
 
 // This is the 'class' of State
 function State() {
@@ -23,9 +13,6 @@ function State() {
 
 function copyState( stateToBeCopied,targetState)
 {
-
-
-    
     stateToBeCopied.myActions = targetState.myActions.slice(0)
     stateToBeCopied.opActions = targetState.opActions.slice(0)
     stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0)
@@ -42,7 +29,7 @@ function copyState( stateToBeCopied,targetState)
  * tikiId: is the identity of the tiki , it represent the tiki
  */
 function updateState(action, tikiIdx, player) {
-    console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+    //console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
 
 
     var tikiId = state.tikiOrder[tikiIdx]
@@ -50,7 +37,27 @@ function updateState(action, tikiIdx, player) {
     if (0 === player) {
         var idx = state.myActions.indexOf(action);
         state.myActions.splice(idx, 1);
-        console.log('This is AI do the action')
+        console.log('This is AI do the action', action, tikiIdx)
+        if (action == 0) {
+            updateStateWithMoveup(1,tikiId , state);
+            moveUp(tikiIdx, 1);
+        }
+        else if (action == 1) {
+            updateStateWithMoveup(2,tikiId, state);
+            moveUp(tikiIdx, 2);
+        }
+        else if (action == 2) {
+            updateStateWithMoveup(3,tikiId, state);
+            moveUp(tikiIdx, 3);
+        }
+        else if (action == 3) {
+            updateStateWithPush(tikiId, state);
+            moveToBottom(tikiIdx);
+        }
+        else if (action ==4) {
+            updateStateWithKill(state);
+            killLast();
+        }
     }
     else if (1 === player) {
 
@@ -58,25 +65,23 @@ function updateState(action, tikiIdx, player) {
         state.opActions.splice(idx, 1);
         console.log('This is human do the action')
 
-      
-    if (action == 0)
-        updateStateWithMoveup(1,tikiId , state);
-    else if (action == 1)
-        updateStateWithMoveup(2,tikiId, state);
-    else if (action == 2)
-        updateStateWithMoveup(3,tikiId, state); 
-    else if (action == 3)
-        updateStateWithPush(tikiId, state);
-    else if (action ==4)
-        updateStateWithKill(state);
-
+        if (action == 0)
+            updateStateWithMoveup(1,tikiId , state);
+        else if (action == 1)
+            updateStateWithMoveup(2,tikiId, state);
+        else if (action == 2)
+            updateStateWithMoveup(3,tikiId, state); 
+        else if (action == 3)
+            updateStateWithPush(tikiId, state);
+        else if (action ==4)
+            updateStateWithKill(state);
     }
 
     else {
         console.log('ERROR: invalid "player" passed to updateState()')
     }
 
-    console.log('Updated State:', state.tikiOrder)
+    console.log('Current Order:', state.tikiOrder)
 }
 
 //used for AI get nextState in ComAI()
@@ -165,7 +170,7 @@ function evaluationFunction(currentState)
 //use evaluation function to get the score , return the best action
 function comAIMove() 
 {
-    console.log('Computer AI turn')
+    //console.log('Computer AI turn')
     
 
     var allNextState = []
@@ -204,9 +209,9 @@ function comAIMove()
             }
     }
 
-    
-
     console.log("AI say do operation " , state.opActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
+    var operation = state.opActions[allNextAction[maxIndex]];
+    updateState(operation, allNextMovingTiki[maxIndex], 0);
 
 }
 

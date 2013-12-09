@@ -115,8 +115,9 @@ function createCards() {
             return;
         }
 
-        updateState(0, selectedTikiIdx, 1);
+        humanAnim = true;
         tikis = moveUp(selectedTikiIdx, 1);
+        updateState(0, selectedTikiIdx, 1);
 
         upCardRemain--;
         if (0 === upCardRemain) {
@@ -128,7 +129,9 @@ function createCards() {
         hasSelected = false;
         selectedTikiIdx = null;
 
-        comAIMove();
+        setTimeout(function() {
+            comAIMove();
+        }, 1000);
     });
     cards.eq(1).text('Up 2').on('click', function() {
         if (!hasSelected) return;
@@ -147,7 +150,9 @@ function createCards() {
         hasSelected = false;
         selectedTikiIdx = null;
 
-        comAIMove();
+        setTimeout(function() {
+            comAIMove();
+        }, 1000);
     });
     cards.eq(2).text('Up 3').on('click', function() {
         if (!hasSelected) return;
@@ -166,7 +171,9 @@ function createCards() {
         hasSelected = false;
         selectedTikiIdx = null;
 
-        comAIMove();
+        setTimeout(function() {
+            comAIMove();
+        }, 1000);
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -183,7 +190,9 @@ function createCards() {
         hasSelected = false;
         selectedTikiIdx = null;
 
-        comAIMove();
+        setTimeout(function() {
+            comAIMove();
+        }, 1000);
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
@@ -202,7 +211,9 @@ function createCards() {
             selectedTikiIdx = null;
         }
 
-        comAIMove();
+        setTimeout(function() {
+            comAIMove();
+        }, 1000);
     });
 
 

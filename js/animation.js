@@ -1,6 +1,7 @@
 var animStage; // reference "stage" variable in main.js
 var animTikis; // reference to "tikis" variable in main.js
 var animanimTikiWidth, animTikiHeight;
+var humanAnim = false;
 
 /*
  * Handle animation for moving Tiki up k position
@@ -69,6 +70,10 @@ function moveUp(targetIdx, k) {
         }
         if (animStep === 3) {
             createjs.Ticker.removeEventListener('tick', tick);
+            /*if (humanAnim) {
+                humanAnim = false;
+                updateState(k - 1, targetIdx, 1);
+            }*/
         }
 
         animStage.update(event);
