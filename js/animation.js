@@ -1,5 +1,5 @@
-var animStage; // cache "stage" variable in main.js
-var animTikis; // cache "tikis" variable in main.js
+var animStage; // reference "stage" variable in main.js
+var animTikis; // reference to "tikis" variable in main.js
 var animanimTikiWidth, animTikiHeight;
 
 /*
@@ -75,4 +75,75 @@ function moveUp(targetIdx, k) {
     }
 
     return animTikis;
+}
+
+function moveToBottom(targetIdx) {
+    if (animTikis.length === targetIdx + 1) {
+        return;
+    }
+
+    var upper, lower;
+
+    upper = animTikis[targetIdx];
+    lower = animTikis.slice(targetIdx + 1);
+
+    animTikis[animTikis.length-1] = upper;
+    for (var i = 0; i < lower.length; ++i) {
+        animTikis[targetIdx + i] = lower[i];
+    }
+
+    var upperX = upper.x, upperY = upper.y;
+    var lowerX = lower[lower.length-1].x, lowerY = lower[lower.length-1].y;
+    var animStep = 0;
+
+    createjs.Ticker.addEventListener("tick", tick);
+    createjs.Ticker.setInterval(60);
+    createjs.Ticker.setFPS(60);
+
+    function tick(event) {
+        if (animStep === 0) {
+            if (upper.x - upperX > animTikiWidth + 1) {
+                animStep = 1;
+            } 
+            else {
+                upper.x = upper.x + animTikiWidth / 5;
+            }
+        }
+        if (animStep === 1) {
+            if (upper.y >= lowerY) {
+                upper.y = lowerY;
+                for (var i = 0; i < lower.length; ++i) {
+                    lower[i].y = upperY + (lowerY - upperY) / lower.length * i;
+                }
+                //upper.y = lowerY;
+                animStep = 2;
+            }
+            else {
+                for (var i = 0; i < lower.length; ++i) {
+                    lower[i].y = lower[i].y - (lowerY - upperY) / 10 / lower.length;
+                }
+                upper.y = upper.y + (lowerY - upperY) / 10;
+            }
+        }
+        if (animStep === 2) {
+            if (upper.x <= upperX) {
+                upper.x = upperX;
+                animStep = 3;
+            }
+            else {
+                upper.x = upper.x - animTikiWidth / 5;
+            }
+        }
+        if (animStep === 3) {
+            createjs.Ticker.removeEventListener('tick', tick);
+        }
+
+        animStage.update(event);
+    }
+}
+
+function killLast() {
+    animStage.removeChild(animTikis[animTikis.length-1]);
+    animStage.update();
+    animTikis.pop();
 }
