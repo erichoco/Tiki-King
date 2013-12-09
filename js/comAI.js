@@ -21,6 +21,18 @@ function State() {
     this.missionTarget = [1 , 3 , 4 ] //the AI's mission
 }
 
+function copyState( stateToBeCopied,targetState)
+{
+
+
+    
+    stateToBeCopied.myActions = targetState.myActions.slice(0)
+    stateToBeCopied.opActions = targetState.opActions.slice(0)
+    stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0)
+    stateToBeCopied.missionTarget = targetState.missionTarget.slice(0)
+
+}
+
 /*
  * Update state object.
  *
@@ -30,6 +42,8 @@ function State() {
  */
 function updateState(action, tikiIdx, player) {
     console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+
+    var tikiId = state.tikiOrder[tikiIdx]
 
     if (0 === player) {
         var idx = state.myActions.indexOf(action);
@@ -43,15 +57,15 @@ function updateState(action, tikiIdx, player) {
 
       
     if (action == 0)
-        updateStateWithMoveup(1,tikiIdx);
+        updateStateWithMoveup(1,tikiId , state);
     else if (action == 1)
-        updateStateWithMoveup(2,tikiIdx);
+        updateStateWithMoveup(2,tikiId, state);
     else if (action == 2)
-        updateStateWithMoveup(3,tikiIdx); 
+        updateStateWithMoveup(3,tikiId, state); 
     else if (action == 3)
-        updateStateWithPush(tikiIdx);
+        updateStateWithPush(tikiId, state);
     else if (action ==4)
-        updateStateWithKill();
+        updateStateWithKill(state);
 
     }
 
@@ -62,35 +76,62 @@ function updateState(action, tikiIdx, player) {
     console.log('Updated State:', state.tikiOrder)
 }
 
-function updateStateWithMoveup(moveup , tikiIdx)
+//used for AI get nextState in ComAI()
+function tryNextState(action , tikiId , currentState)  
 {
-    tmp = state.tikiOrder[tikiIdx]
-    moveTime = 0
-    while(moveTime<moveup){
-        index = tikiIdx - moveTime
-        state.tikiOrder[index] = state.tikiOrder[index-1]
-        moveTime +=1
-    }
-    state.tikiOrder[tikiIdx - moveup] = tmp
+
+    if (action == 0)
+        updateStateWithMoveup(1,tikiId , currentState);
+    else if (action == 1)
+        updateStateWithMoveup(2,tikiId, currentState);
+    else if (action == 2)
+        updateStateWithMoveup(3,tikiId, currentState); 
+    else if (action == 3)
+        updateStateWithPush(tikiId, currentState);
+    else if (action ==4)
+        updateStateWithKill(currentState);
+
+
+
+    return currentState
+
 }
 
-function updateStateWithPush(tikiIdx)
+function updateStateWithMoveup(moveup , tikiId , targetState)
 {
-    tmp = state.tikiOrder[tikiIdx]
-    index = tikiIdx
-    while(index<state.tikiOrder.length-1){
-        state.tikiOrder[index] = state.tikiOrder[index+1]
+
+    var tmp = tikiId
+    var moveTime = 0
+    var tikiIndex = getTikiIndex(tikiId , targetState)
+
+    while(moveTime<moveup){
+        var index = tikiIndex - moveTime
+        targetState.tikiOrder[index] = targetState.tikiOrder[index-1]
+        moveTime +=1
+    }
+    targetState.tikiOrder[tikiIndex - moveup] = tmp
+}
+
+function updateStateWithPush(tikiId , targetState)
+{
+
+    var tikiIndex = getTikiIndex(tikiId , targetState)
+    var index = tikiIndex
+
+
+    while(index<targetState.tikiOrder.length-1){
+        targetState.tikiOrder[index] = targetState.tikiOrder[index+1]
         index +=1
     }
 
-    state.tikiOrder[state.tikiOrder.length-1] = tmp
+    targetState.tikiOrder[targetState.tikiOrder.length-1] = tikiId
 
 }
 
-function updateStateWithKill()
+function updateStateWithKill(targetState)
 {
 
-    state.tikiOrder.pop()
+    targetState.tikiOrder.pop()
 
 }
 
@@ -99,19 +140,16 @@ function evaluationFunction(currentState)
     var score = 0 
     var distance = 0  
     var idx
-    console.log('missionTarget length is ' , state.missionTarget.length)
 
-    
-    for( var i = 0 ; i < state.missionTarget.length ; i++){
+    for( var i = 0 ; i < currentState.missionTarget.length ; i++){
       
-      idx = gettikiIdx(state.missionTarget[i]);
+      idx = getTikiIndex(currentState.missionTarget[i] , currentState);
       if(idx <= i)
         {
 
             if (i == 0) score+=9
             else if (i == 1) score+=5
             else if (i == 2) score +=2
-            console.log('Score is ' , score)
         }
       else distance += Math.abs(idx-i);
     }
@@ -120,26 +158,105 @@ function evaluationFunction(currentState)
      
 }
 
-
+//compute the states of every remained action and to every tiki on the table
+//use evaluation function to get the score , return the best action
 function comAIMove() 
 {
     console.log('Computer AI turn')
-
-
-    score = evaluationFunction(state)
-    console.log('The state\'s score is ' , score )
     
+
+    var allNextState = []
+    var allNextAction = []
+    var allNextMovingTiki = []
+    for(var i = 0 ; i < state.opActions.length ; i++)
+        for(var j = 0 ; j < state.tikiOrder.length ; j++)
+        {
+            var nextState = new State()
+            copyState(nextState,state)
+            //console.log("try state " , state , "with op and tikiOrder " , state.opActions[i] , state.tikiOrder[j])
+            var illegal = checkLegalAction(state.opActions[i] , state.tikiOrder[j] , nextState)
+
+
+            if (illegal == 1) 
+                continue
+
+            nextState = tryNextState(state.opActions[i] , state.tikiOrder[j] , nextState)
+            allNextState.push(nextState)
+            allNextAction.push(i)
+            allNextMovingTiki.push(j)
+        
+            //console.log("The nextState oeder is " , nextState.tikiOrder)
+
+        }
+
+    var maxIndex = 0 ;
+    var maxValue = -100000 ;
+
+    for(var i = 0 ; i < allNextState.length ; i++)
+    {
+        var tmpValue = evaluationFunction(allNextState[i])
+        if(tmpValue > maxValue)
+            {maxValue = tmpValue
+             maxIndex = i
+            }
+    }
+
+    
+
+    console.log("AI say do operation " , state.opActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
+
 }
 
-function gettikiIdx(tikiIdx)
+
+//check if the action is legal to the tiki
+//ex: action push up 3 is not allowed for tiki of order 0
+//p.s. kill is always allowed
+function checkLegalAction( action,tikiId , targetState)
+{
+
+    index = getTikiIndex(tikiId , targetState)
+
+    var illegal = 0
+    if(action == 0)
+    {
+        if(index == 0)
+            illegal = 1
+    }
+    else if(action ==1)
+    {
+        if(index <=1)
+            illegal = 1
+    }
+    else if(action ==2)
+    {
+        if(index <= 2)
+            illegal = 1
+    }
+
+    else if(action == 3)
+    {
+        if (index >= targetState.tikiOrder.length-1)
+            illegal = 1
+    }
+
+    //console.log("In checkLegalAction , The tikiIdx , index , action , illegal " , tikiIdx , index , action , illegal)
+
+    return illegal
+
+}
+
+//give a tiki id , it return the tiki 's order in array tikiOrder
+function getTikiIndex(tikiId , targetState)
 {
     var idx = 0;
-    for(var i = 0 ; i < state.tikiOrder.length ; i++)
-        if (state.tikiOrder[i] == tikiIdx)
+    for(var i = 0 ; i < targetState.tikiOrder.length ; i++)
+        if (targetState.tikiOrder[i] == tikiId)
             {idx = i ;
             return idx;}
 
-     console.log('Error! the tikiOrder ', tikiOrder , ' , which is not in tikiOrder!')
+     //console.log('The tiki you try to find is not in tikiOrder , which may be killed...')
+     //console.log('Tiki Order is ' , targetState.tikiOrder)
+     //console.log('The tikiOrder ', tikiIdx , ' , which is not in tikiOrder!')
 }
 
 
