@@ -39,9 +39,11 @@ function copyState( stateToBeCopied,targetState)
  * action: index of new action (card used)
  * tikiIdx: tiki index on which the action applied
  * player: player who conducts the action (0: AI, 1: human player)
+ * tikiId: is the identity of the tiki , it represent the tiki
  */
 function updateState(action, tikiIdx, player) {
     console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+
 
     var tikiId = state.tikiOrder[tikiIdx]
 
@@ -51,6 +53,7 @@ function updateState(action, tikiIdx, player) {
         console.log('This is AI do the action')
     }
     else if (1 === player) {
+
         var idx = state.opActions.indexOf(action);
         state.opActions.splice(idx, 1);
         console.log('This is human do the action')
