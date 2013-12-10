@@ -176,19 +176,19 @@ function comAIMove()
     var allNextState = []
     var allNextAction = []
     var allNextMovingTiki = []
-    for(var i = 0 ; i < state.opActions.length ; i++)
+    for(var i = 0 ; i < state.myActions.length ; i++)
         for(var j = 0 ; j < state.tikiOrder.length ; j++)
         {
             var nextState = new State()
             copyState(nextState,state)
-            //console.log("try state " , state , "with op and tikiOrder " , state.opActions[i] , state.tikiOrder[j])
-            var illegal = checkLegalAction(state.opActions[i] , state.tikiOrder[j] , nextState)
+            //console.log("try state " , state , "with op and tikiOrder " , state.myActions[i] , state.tikiOrder[j])
+            var illegal = checkLegalAction(state.myActions[i] , state.tikiOrder[j] , nextState)
 
 
             if (illegal == 1) 
                 continue
 
-            nextState = tryNextState(state.opActions[i] , state.tikiOrder[j] , nextState)
+            nextState = tryNextState(state.myActions[i] , state.tikiOrder[j] , nextState)
             allNextState.push(nextState)
             allNextAction.push(i)
             allNextMovingTiki.push(j)
@@ -209,8 +209,8 @@ function comAIMove()
             }
     }
 
-    console.log("AI say do operation " , state.opActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
-    var operation = state.opActions[allNextAction[maxIndex]];
+    console.log("AI say do operation " , state.myActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
+    var operation = state.myActions[allNextAction[maxIndex]];
     updateState(operation, allNextMovingTiki[maxIndex], 0);
 
     var AIscore = computeAISocre(state)
