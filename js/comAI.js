@@ -213,6 +213,9 @@ function comAIMove()
     var operation = state.opActions[allNextAction[maxIndex]];
     updateState(operation, allNextMovingTiki[maxIndex], 0);
 
+    var AIscore = computeAISocre(state)
+    console.log("AI now scores ", AIscore)
+
 }
 
 
@@ -265,6 +268,25 @@ function getTikiIndex(tikiId , targetState)
      //console.log('The tiki you try to find is not in tikiOrder , which may be killed...')
      //console.log('Tiki Order is ' , targetState.tikiOrder)
      //console.log('The tikiOrder ', tikiIdx , ' , which is not in tikiOrder!')
+}
+
+function computeAISocre(currentState)
+{
+    var score = 0 
+    for( var i = 0 ; i < currentState.missionTarget.length ; i++){
+      
+      idx = getTikiIndex(currentState.missionTarget[i] , currentState);
+      if(idx <= i)
+        {
+
+            if (i == 0) score+=9
+            else if (i == 1) score+=5
+            else if (i == 2) score +=2
+        }
+
+    }
+
+   return score
 }
 
 
