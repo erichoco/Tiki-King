@@ -32,7 +32,7 @@ function startCanvas() {
     var canvasWidth = gameCanvas.width();
     var canvasHeight = gameCanvas.height();
     gameCanvas.attr('width', canvasWidth)
-            .attr('height', canvasHeight);
+            .attr('height', canvasHeight)
 
     // Initial stage by referencing canvas
     stage = new createjs.Stage(gameCanvas[0]);
