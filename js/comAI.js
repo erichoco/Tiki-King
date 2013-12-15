@@ -32,8 +32,6 @@ function copyState( stateToBeCopied,targetState)
  */
 function updateState(action, tikiIdx, player) {
     //console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
-
-
     var tikiId = state.tikiOrder[tikiIdx]
 
     if (0 === player) {
@@ -304,7 +302,7 @@ function computeHumSocre(currentState)
 }
 
 function checkGameEnd() {
-    if ((!state.humActions.length && !state.comActions.length) || state.tikiOrder.length <= 3) {
+    if ((0 === state.humActions.length && 0 === state.comActions.length) || state.tikiOrder.length <= 3) {
         computeResult();
     }
 }

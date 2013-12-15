@@ -39,6 +39,8 @@ function resetGame() {
 
     createTikis();
     createMissions();
+    state.comActions = [0, 0, 1, 2, 3, 4, 4];
+    state.humActions = [0, 0, 1, 2, 3, 4, 4];
     setupAnimVar();
 }
 
@@ -75,6 +77,12 @@ function createMissions() {
     state.comMission = comMission;
     state.humMission = humMission;
     console.log('Your mission: ' + humMission);
+
+    var missionBoard2 = $('#mission-wrapper .mission-board:first-child');
+    for (var i = 0; i < humMission.length; ++i) {
+        var mission = missionBoard2.children(':nth-child(' + (i+1) + ')');
+        mission.html(humMission[i]);
+    }
     //console.log('Your mission: ' + comMission);
 }
 

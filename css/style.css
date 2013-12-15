@@ -35,6 +35,9 @@ body {
       background-color: #A0785A;
       border: 1px solid #FFFFFF;
       border-radius: 10px; }
+      #game-pad #mission-wrapper .mission-board p {
+        font-size: 1.5em;
+        text-align: center; }
   #game-pad #game-canvas {
     margin: 10px 2%;
     width: 60%;
