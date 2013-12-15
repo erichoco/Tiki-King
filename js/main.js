@@ -18,11 +18,12 @@ $(document).ready(function() {
     startCanvas();
     initParams();
 
-    createTikis();
     createCards();
     setupAnimVar();
 
     $('#replay').click(resetGame);
+
+    startGame();
 });
 
 function initParams() {
@@ -30,6 +31,51 @@ function initParams() {
     hasSelected = false;
     upCardRemain = 2;
     killCardRemain = 2;
+}
+
+function resetGame() {
+    stage.removeAllChildren();
+    initParams();
+
+    createTikis();
+    createMissions();
+    setupAnimVar();
+}
+
+function startGame() {
+    createTikis();
+    createMissions();
+    setupAnimVar();
+}
+
+function setupAnimVar() {
+    // Setup global variables in animation.js
+    animStage = stage;
+    animTikis = tikis;
+    animTikiWidth = tikiWidth;
+    animTikiHeight = tikiHeight;
+}
+
+function createMissions() {
+    var naiveOrder1 = naiveOrder2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    var comMission = [], humMission = [];
+    for (var i = 0; i < 3; i++) {
+        var mission1 = naiveOrder1[Math.floor(Math.random() * naiveOrder1.length)];
+        var mission2 = naiveOrder2[Math.floor(Math.random() * naiveOrder2.length)];
+        naiveOrder1.splice(naiveOrder1.indexOf(mission1), 1);
+        naiveOrder2.splice(naiveOrder2.indexOf(mission2), 1);
+        comMission.push(mission1);
+        humMission.push(mission2);
+    };
+    if (comMission.compare(humMission)) {
+        var temp = humMission[0];
+        humMission[0] = humMission[1];
+        humMission[1] = temp;
+    }
+    state.comMission = comMission;
+    state.humMission = humMission;
+    console.log('Your mission: ' + humMission);
+    //console.log('Your mission: ' + comMission);
 }
 
 function startCanvas() {
@@ -236,21 +282,6 @@ function createCards() {
             comAIMove();
         }, 1000);
     });
-}
-
-function resetGame() {
-    stage.removeAllChildren();
-    createTikis();
-    initParams();
-    setupAnimVar();
-}
-
-function setupAnimVar() {
-    // Setup global variables in animation.js
-    animStage = stage;
-    animTikis = tikis;
-    animTikiWidth = tikiWidth;
-    animTikiHeight = tikiHeight;
 }
 
 })();

@@ -1,23 +1,25 @@
 /* Implement AI here */
 
 var state = new State();
-console.log("AI's target", state.missionTarget);
+console.log("AI's target", state.comMission);
 
 // This is the 'class' of State
 function State() {
-    this.myActions = [0, 0, 1, 2, 3, 4, 4]; // actions of remained (AI)
-    this.opActions = [0, 0, 1, 2, 3, 4, 4]; // actions of opponent remained (human)
+    this.comActions = [0, 0, 1, 2, 3, 4, 4]; // actions of computer player remained
+    this.humActions = [0, 0, 1, 2, 3, 4, 4]; // actions of human player remained
+    this.comMission = [1, 3, 4]; // the AI's mission
+    this.humMission = [0, 1, 2];
     this.tikiOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    this.missionTarget = [1 , 3 , 4] // the AI's mission
 }
+
 
 function copyState( stateToBeCopied,targetState)
 {
-    stateToBeCopied.myActions = targetState.myActions.slice(0)
-    stateToBeCopied.opActions = targetState.opActions.slice(0)
-    stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0)
-    stateToBeCopied.missionTarget = targetState.missionTarget.slice(0)
-
+    stateToBeCopied.comActions = targetState.comActions.slice(0);
+    stateToBeCopied.humActions = targetState.humActions.slice(0);
+    stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0);
+    stateToBeCopied.comMission = targetState.comMission.slice(0);
+    stateToBeCopied.humMission = targetState.humMission.slice(0);
 }
 
 /*
@@ -35,8 +37,8 @@ function updateState(action, tikiIdx, player) {
     var tikiId = state.tikiOrder[tikiIdx]
 
     if (0 === player) {
-        var idx = state.myActions.indexOf(action);
-        state.myActions.splice(idx, 1);
+        var idx = state.comActions.indexOf(action);
+        state.comActions.splice(idx, 1);
         console.log('This is AI do the action', action, tikiIdx)
         if (action == 0) {
             updateStateWithMoveup(1,tikiId , state);
@@ -61,8 +63,8 @@ function updateState(action, tikiIdx, player) {
     }
     else if (1 === player) {
 
-        var idx = state.opActions.indexOf(action);
-        state.opActions.splice(idx, 1);
+        var idx = state.humActions.indexOf(action);
+        state.humActions.splice(idx, 1);
         console.log('This is human do the action')
 
         if (action == 0)
@@ -82,6 +84,8 @@ function updateState(action, tikiIdx, player) {
     }
 
     console.log('Current Order:', state.tikiOrder)
+
+    checkGameEnd();
 }
 
 //used for AI get nextState in ComAI()
@@ -146,9 +150,9 @@ function evaluationFunction(currentState)
     var distance = 0;
     var idx;
 
-    for( var i = 0 ; i < currentState.missionTarget.length ; i++){
+    for( var i = 0 ; i < currentState.comMission.length ; i++){
       
-        idx = getTikiIndex(currentState.missionTarget[i] , currentState);
+        idx = getTikiIndex(currentState.comMission[i] , currentState);
       /*if(idx <= i)
         {
 
@@ -174,19 +178,19 @@ function comAIMove()
     var allNextState = []
     var allNextAction = []
     var allNextMovingTiki = []
-    for(var i = 0 ; i < state.myActions.length ; i++)
+    for(var i = 0 ; i < state.comActions.length ; i++)
         for(var j = 0 ; j < state.tikiOrder.length ; j++)
         {
             var nextState = new State()
             copyState(nextState,state)
-            //console.log("try state " , state , "with op and tikiOrder " , state.myActions[i] , state.tikiOrder[j])
-            var illegal = checkLegalAction(state.myActions[i] , state.tikiOrder[j] , nextState)
+            //console.log("try state " , state , "with op and tikiOrder " , state.comActions[i] , state.tikiOrder[j])
+            var illegal = checkLegalAction(state.comActions[i] , state.tikiOrder[j] , nextState)
 
 
             if (illegal == 1) 
                 continue
 
-            nextState = tryNextState(state.myActions[i] , state.tikiOrder[j] , nextState)
+            nextState = tryNextState(state.comActions[i] , state.tikiOrder[j] , nextState)
             allNextState.push(nextState)
             allNextAction.push(i)
             allNextMovingTiki.push(j)
@@ -207,8 +211,8 @@ function comAIMove()
             }
     }
 
-    console.log("AI say do operation " , state.myActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
-    var operation = state.myActions[allNextAction[maxIndex]];
+    console.log("AI say do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]])
+    var operation = state.comActions[allNextAction[maxIndex]];
     updateState(operation, allNextMovingTiki[maxIndex], 0);
 
     var AIscore = computeAISocre(state)
@@ -271,9 +275,9 @@ function getTikiIndex(tikiId , targetState)
 function computeAISocre(currentState)
 {
     var score = 0 
-    for( var i = 0 ; i < currentState.missionTarget.length ; i++){
+    for( var i = 0 ; i < currentState.comMission.length ; i++){
       
-      idx = getTikiIndex(currentState.missionTarget[i] , currentState);
+      idx = getTikiIndex(currentState.comMission[i] , currentState);
       if(idx <= i)
         {
 
@@ -281,11 +285,34 @@ function computeAISocre(currentState)
             else if (i == 1) score+=5
             else if (i == 2) score +=2
         }
-
     }
 
    return score
 }
 
+function computeHumSocre(currentState)
+{
+    var score = 0;
+    var reward = [9, 5, 2];
+    for (var i = 0; i < currentState.humMission.length; i++) {
+        idx = currentState.tikiOrder.indexOf(currentState.humMission[i]);
+        if (idx <= i && idx !== -1) {
+            score += reward[i];
+        }
+    }
+   return score;
+}
 
+function checkGameEnd() {
+    if ((!state.humActions.length && !state.comActions.length) || state.tikiOrder.length <= 3) {
+        computeResult();
+    }
+}
 
+function computeResult() {
+    var comScore = computeAISocre(state), humScore = computeHumSocre(state);
+    var winner = (comScore > humScore)? 'Computer' : 'You';
+    alert('Your score: ' + humScore +
+          '\nComputer\'s score: ' + comScore +
+          '\n' + winner + ' Wins');
+}
