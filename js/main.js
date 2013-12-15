@@ -78,12 +78,7 @@ function createMissions() {
     state.humMission = humMission;
     console.log('Your mission: ' + humMission);
 
-    var missionBoard2 = $('#mission-wrapper .mission-board:first-child');
-    for (var i = 0; i < humMission.length; ++i) {
-        var mission = missionBoard2.children(':nth-child(' + (i+1) + ')');
-        mission.html(humMission[i]);
-    }
-    //console.log('Your mission: ' + comMission);
+    displayMissions(comMission, humMission);
 }
 
 function setupCanvasStage() {
@@ -297,8 +292,23 @@ function setupOthers() {
     console.log(comMissionBoard);
     $('#replay').click(resetGame);
     $('#replay').next().change(function() {
-        comMissionBoard.css('visibility', this.checked ? 'visible' : 'hidden');
+        //comMissionBoard.css('visibility', this.checked ? 'visible' : 'hidden');
+        comMissionBoard.fadeToggle();
     });
+}
+
+function displayMissions(comMission, humMission) {
+    var orderStr = ['1st', '2nd', '3rd'];
+    var missionBoard = $('#mission-wrapper .mission-board:first-child');
+    for (var i = 0; i < humMission.length; ++i) {
+        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
+        mission.html(orderStr[i] + ': ' + humMission[i]);
+    }
+    missionBoard = missionBoard.next();
+    for (var i = 0; i < comMission.length; ++i) {
+        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
+        mission.html(orderStr[i] + ': ' + comMission[i]);
+    }
 }
 
 })();
