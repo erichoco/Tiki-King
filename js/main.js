@@ -54,11 +54,22 @@ function startCanvas() {
         var tiki = new createjs.Shape();
         tiki.graphics.beginFill(tikiColor[i])
             .drawRoundRect(0, 0, tikiWidth, tikiHeight, 5);
-        tiki.x = tikiX;
-        tiki.y = tikiY;
+        var id = new createjs.Text('' + i, 'bold 2em Arial', '#FFFFFF');
+        //tiki.x = tikiX;
+        //tiki.y = tikiY;
+        id.x = 10;
+        id.y = 10;
+
+        var container = new createjs.Container();
+        container.x = tikiX;
+        container.y = tikiY;
+        container.addChild(tiki, id);
+
         tikiY += tikiHeight + 5;
 
-        tiki.addEventListener('mouseover', function(evt) {
+
+
+        container.addEventListener('mouseover', function(evt) {
             //evt.target.alpha = 0.6;
             //console.log(!hasSelected);
             if (!hasSelected) {
@@ -68,14 +79,14 @@ function startCanvas() {
                 stage.update();
             }
         });
-        tiki.addEventListener('mouseout', function(evt) {
+        container.addEventListener('mouseout', function(evt) {
             //evt.target.alpha = 1;
             if (!hasSelected) {
                 stage.removeChild(selectMark);
                 stage.update();
             }
         });
-        tiki.addEventListener('click', function(evt) {
+        container.addEventListener('click', function(evt) {
             if (!hasSelected) {
                 selectedTikiIdx = tikis.indexOf(evt.target);
                 hasSelected = true;
@@ -96,8 +107,10 @@ function startCanvas() {
             stage.update();
         });
 
-        tikis.push(tiki);
-        stage.addChild(tiki);
+        tikis.push(container);
+        /*stage.addChild(tiki);
+        stage.addChild(id);*/
+        stage.addChild(container);
     }
 
     stage.update();

@@ -8,7 +8,7 @@ function State() {
     this.myActions = [0, 0, 1, 2, 3, 4, 4]; // actions of remained (AI)
     this.opActions = [0, 0, 1, 2, 3, 4, 4]; // actions of opponent remained (human)
     this.tikiOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    this.missionTarget = [1 , 3 , 4 ] //the AI's mission
+    this.missionTarget = [1 , 3 , 4] //the AI's mission
 }
 
 function copyState( stateToBeCopied,targetState)
@@ -114,53 +114,54 @@ function updateStateWithMoveup(moveup , tikiId , targetState)
         targetState.tikiOrder[index] = targetState.tikiOrder[index-1]
         moveTime +=1
     }
-    targetState.tikiOrder[tikiIndex - moveup] = tmp
+    targetState.tikiOrder[tikiIndex - moveup] = tmp;
 }
 
 function updateStateWithPush(tikiId , targetState)
 {
 
-    var tikiIndex = getTikiIndex(tikiId , targetState)
-    var index = tikiIndex
+    var tikiIndex = getTikiIndex(tikiId , targetState);
+    var index = tikiIndex;
 
 
     while(index<targetState.tikiOrder.length-1){
-        targetState.tikiOrder[index] = targetState.tikiOrder[index+1]
-        index +=1
+        targetState.tikiOrder[index] = targetState.tikiOrder[index+1];
+        index +=1;
     }
 
-    targetState.tikiOrder[targetState.tikiOrder.length-1] = tikiId
+    targetState.tikiOrder[targetState.tikiOrder.length-1] = tikiId;
 
 }
 
 function updateStateWithKill(targetState)
 {
 
-    targetState.tikiOrder.pop()
+    targetState.tikiOrder.pop();
 
 }
 
 function evaluationFunction(currentState)
 {
-    var score = 0 
-    var distance = 0  
-    var idx
+    var score = computeAISocre(currentState);
+    var distance = 0;
+    var idx;
 
     for( var i = 0 ; i < currentState.missionTarget.length ; i++){
       
-      idx = getTikiIndex(currentState.missionTarget[i] , currentState);
-      if(idx <= i)
+        idx = getTikiIndex(currentState.missionTarget[i] , currentState);
+      /*if(idx <= i)
         {
 
             if (i == 0) score+=9
             else if (i == 1) score+=5
             else if (i == 2) score +=2
+        }*/
+        if(idx > i) {
+            distance += Math.abs(idx-i);
         }
-      else distance += Math.abs(idx-i);
     }
 
-    return score*10 - distance
-     
+    return score*10 - distance;
 }
 
 //compute the states of every remained action and to every tiki on the table
