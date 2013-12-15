@@ -15,13 +15,13 @@ var selectMark;
 var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
-    startCanvas();
     initParams();
 
+    setupCanvasStage();
     createCards();
-    setupAnimVar();
+    setupOthers();
 
-    $('#replay').click(resetGame);
+    setupAnimVar();
 
     startGame();
 });
@@ -78,7 +78,7 @@ function createMissions() {
     //console.log('Your mission: ' + comMission);
 }
 
-function startCanvas() {
+function setupCanvasStage() {
 
     // Scale canvas with its actually width and height
     var gameCanvas = $('#game-canvas');
@@ -281,6 +281,15 @@ function createCards() {
         setTimeout(function() {
             comAIMove();
         }, 1000);
+    });
+}
+
+function setupOthers() {
+    var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
+    console.log(comMissionBoard);
+    $('#replay').click(resetGame);
+    $('#replay').next().change(function() {
+        comMissionBoard.css('visibility', this.checked ? 'visible' : 'hidden');
     });
 }
 
