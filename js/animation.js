@@ -11,7 +11,7 @@ var humanAnim = false;
 function moveUp(targetIdx, k) {
     //console.log(animTikis);
     var upper, lower;
-    
+
     upper = animTikis.slice(targetIdx - k, targetIdx);
     lower = animTikis[targetIdx];
 

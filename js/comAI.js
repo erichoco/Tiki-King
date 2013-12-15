@@ -8,7 +8,7 @@ function State() {
     this.myActions = [0, 0, 1, 2, 3, 4, 4]; // actions of remained (AI)
     this.opActions = [0, 0, 1, 2, 3, 4, 4]; // actions of opponent remained (human)
     this.tikiOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    this.missionTarget = [1 , 3 , 4] //the AI's mission
+    this.missionTarget = [1 , 3 , 4] // the AI's mission
 }
 
 function copyState( stateToBeCopied,targetState)

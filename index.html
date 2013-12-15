@@ -7,6 +7,8 @@
 </head>
 <body>
     <div id="content-wrapper">
+        <button id="replay" type="button">Replay</button>
+        <input type="checkbox">Show CP Mission</input>
         <div id="game-pad">
             <canvas id="game-canvas">
             </canvas>
@@ -21,10 +23,15 @@
                     </ul>
                 </div>
             </div>
+            <div id="mission-wrapper">
+                <div class="mission-board"></div>
+                <div class="mission-board"></div>
+            </div>
         </div>
     </div>
     <script language="javascript" type="text/javascript" src="js/jquery-git.js"></script>
     <script src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/util.js"></script>
     <script language="javascript" type="text/javascript" src="js/comAI.js"></script>
     <script language="javascript" type="text/javascript" src="js/animation.js"></script>
     <script language="javascript" type="text/javascript" src="js/main.js"></script>

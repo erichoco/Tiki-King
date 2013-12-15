@@ -3,40 +3,52 @@
 var stage;
 var tikis; // save all canvas objects of tikis
 
-var selectedTikiIdx;
-var hasSelected; // Boolean
-var selectMark;
-
+var canvasWidth = 0, canvasHeight = 0;
 var tikiWidth = 0, tikiHeight = 0;
 var tikiColor = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22'];
 
-var upCardRemain = 2, killCardRemain = 2;
+var selectedTikiIdx;
+var hasSelected; // Boolean
+var selectMark;
+
+var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
     startCanvas();
+    initParams();
+
+    createTikis();
     createCards();
+    setupAnimVar();
 
-    // Initial global variables in animation.js
-    animStage = stage;
-    animTikis = tikis;
-    animTikiWidth = tikiWidth;
-    animTikiHeight = tikiHeight;
-
+    $('#replay').click(resetGame);
 });
+
+function initParams() {
+    selectedTikiIdx = null;
+    hasSelected = false;
+    upCardRemain = 2;
+    killCardRemain = 2;
+}
 
 function startCanvas() {
 
     // Scale canvas with its actually width and height
     var gameCanvas = $('#game-canvas');
-    var canvasWidth = gameCanvas.width();
-    var canvasHeight = gameCanvas.height();
+    canvasWidth = gameCanvas.width();
+    canvasHeight = gameCanvas.height();
     gameCanvas.attr('width', canvasWidth)
             .attr('height', canvasHeight)
 
     // Initial stage by referencing canvas
     stage = new createjs.Stage(gameCanvas[0]);
     stage.enableMouseOver(20);
+}
+
+function createTikis() {
+    var tikiOrder = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+    state.tikiOrder = tikiOrder;
 
     tikis = new Array();
     tikiHeight = canvasHeight / tikiColor.length - 10;
@@ -48,13 +60,11 @@ function startCanvas() {
         circleMark.setStrokeStyle(1).beginFill('#FFFFFF').drawCircle(0, 0, 3);
     selectMark = new createjs.Shape(circleMark);
 
-    selectedTikiIdx = null;
-    hasSelected = false;
-    for (var i = 0; i < tikiColor.length; ++i) {
+    for (var i = 0, o = tikiOrder[i]; i < tikiOrder.length; ++i, o = tikiOrder[i]) {
         var tiki = new createjs.Shape();
-        tiki.graphics.beginFill(tikiColor[i])
+        tiki.graphics.beginFill(tikiColor[o])
             .drawRoundRect(0, 0, tikiWidth, tikiHeight, 5);
-        var id = new createjs.Text('' + i, 'bold 2em Arial', '#FFFFFF');
+        var id = new createjs.Text('' + o, 'bold 2em Arial', '#FFFFFF');
         //tiki.x = tikiX;
         //tiki.y = tikiY;
         id.x = 10;
@@ -66,8 +76,6 @@ function startCanvas() {
         container.addChild(tiki, id);
 
         tikiY += tikiHeight + 5;
-
-
 
         container.addEventListener('mouseover', function(evt) {
             //evt.target.alpha = 0.6;
@@ -228,85 +236,21 @@ function createCards() {
             comAIMove();
         }, 1000);
     });
+}
 
+function resetGame() {
+    stage.removeAllChildren();
+    createTikis();
+    initParams();
+    setupAnimVar();
+}
 
-    /*$('#card-wrapper li div').on('click', function() {
-
-        //var targetIdx = Math.floor(Math.random() * (tikis.length-1)) + 1;
-        if (null === selectedTiki) {
-            return;
-        }
-
-        var upper, lower;
-        var targetIdx = tikis.indexOf(selectedTiki);
-        if (-1 === targetIdx) {
-            console.log("selected tiki not in tiki list!");
-            return;
-        }
-        else if (0 === targetIdx) {
-            alert('Cannot move the first Tiki!');
-            return;
-        }
-        else {
-            upper = tikis[targetIdx - 1];
-            lower = selectedTiki;
-        }
-        tikis[targetIdx - 1] = lower;
-        tikis[targetIdx] = upper;
-        console.log(upper);
-        console.log(lower);
-
-        var upperX = upper.x, upperY = upper.y;
-        var lowerX = lower.x, lowerY = lower.y;
-        var animStep = 0;
-
-        stage.removeChildAt(5);
-        hasSelected = false;
-        selectedTiki = null;
-
-        createjs.Ticker.addEventListener("tick", tick);
-        createjs.Ticker.setInterval(60);
-        createjs.Ticker.setFPS(60);
-
-        function tick(event) {
-            if (animStep === 0) {
-                if (lowerX - lower.x > tikiWidth / 2 + 1) {
-                    animStep = 1;
-                } 
-                else {
-                    upper.x = upper.x + tikiWidth / 5;
-                    lower.x = lower.x - tikiWidth / 5;
-                }
-            }
-            if (animStep === 1) {
-                if (lower.y <= upperY) {
-                    lower.y = upperY;
-                    upper.y = lowerY;
-                    animStep = 2;
-                }
-                else {
-                    upper.y = upper.y + (lowerY - upperY) / 10;
-                    lower.y = lower.y - (lowerY - upperY) / 10;
-                }
-            }
-            if (animStep === 2) {
-                if (lower.x >= upperX) {
-                    lower.x = upperX;
-                    upper.x = lowerX;
-                    animStep = 3;
-                }
-                else {
-                    upper.x = upper.x - tikiWidth / 5;
-                    lower.x = lower.x + tikiWidth / 5;
-                }
-            }
-            if (animStep === 3) {
-                createjs.Ticker.removeEventListener('tick', tick);
-            }
-
-            stage.update(event);
-        }
-    });*/
+function setupAnimVar() {
+    // Setup global variables in animation.js
+    animStage = stage;
+    animTikis = tikis;
+    animTikiWidth = tikiWidth;
+    animTikiHeight = tikiHeight;
 }
 
 })();
