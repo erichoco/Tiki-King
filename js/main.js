@@ -17,7 +17,7 @@ var upCardRemain, killCardRemain;
 $(document).ready(function() {
     initParams();
 
-    setupCanvasStage();
+    createCanvasStage();
     createCards();
     setupOthers();
 
@@ -26,11 +26,29 @@ $(document).ready(function() {
     startGame();
 });
 
+
+
+// Initialize parameters in main.js
 function initParams() {
     selectedTikiIdx = null;
     hasSelected = false;
     upCardRemain = 2;
     killCardRemain = 2;
+}
+
+// Initialize global variables in animation.js
+function setupAnimVar() {
+    animStage = stage;
+    animTikis = tikis;
+    animTikiWidth = tikiWidth;
+    animTikiHeight = tikiHeight;
+}
+
+function startGame() {
+    createTikis();
+    createMissions();
+    setupCards();
+    setupAnimVar();
 }
 
 function resetGame() {
@@ -39,24 +57,40 @@ function resetGame() {
 
     createTikis();
     createMissions();
-    state.comActions = [0, 0, 1, 2, 3, 4, 4];
-    state.humActions = [0, 0, 1, 2, 3, 4, 4];
+    setupCards();
     setupAnimVar();
+    state.init();
 }
 
-function startGame() {
-    createTikis();
-    createMissions();
-    setupAnimVar();
+
+
+function createCanvasStage() {
+    // Scale canvas with its actually width and height
+    var gameCanvas = $('#game-canvas');
+    canvasWidth = gameCanvas.width();
+    canvasHeight = gameCanvas.height();
+    gameCanvas.attr('width', canvasWidth)
+            .attr('height', canvasHeight)
+
+    // Initial stage by referencing canvas
+    stage = new createjs.Stage(gameCanvas[0]);
+    stage.enableMouseOver(20);
 }
 
-function setupAnimVar() {
-    // Setup global variables in animation.js
-    animStage = stage;
-    animTikis = tikis;
-    animTikiWidth = tikiWidth;
-    animTikiHeight = tikiHeight;
+function createCards() {
+    $('#card-wrapper li').append('<div class="cards"></div>');
 }
+
+function setupOthers() {
+    var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
+    console.log(comMissionBoard);
+    $('#replay').click(resetGame);
+    $('#replay').next().change(function() {
+        comMissionBoard.fadeToggle();
+    });
+}
+
+
 
 function createMissions() {
     var naiveOrder1 = naiveOrder2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -81,18 +115,18 @@ function createMissions() {
     displayMissions(comMission, humMission);
 }
 
-function setupCanvasStage() {
-
-    // Scale canvas with its actually width and height
-    var gameCanvas = $('#game-canvas');
-    canvasWidth = gameCanvas.width();
-    canvasHeight = gameCanvas.height();
-    gameCanvas.attr('width', canvasWidth)
-            .attr('height', canvasHeight)
-
-    // Initial stage by referencing canvas
-    stage = new createjs.Stage(gameCanvas[0]);
-    stage.enableMouseOver(20);
+function displayMissions(comMission, humMission) {
+    var orderStr = ['1st', '2nd', '3rd'];
+    var missionBoard = $('#mission-wrapper .mission-board:first-child');
+    for (var i = 0; i < humMission.length; ++i) {
+        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
+        mission.html(orderStr[i] + ': ' + humMission[i]);
+    }
+    missionBoard = missionBoard.next();
+    for (var i = 0; i < comMission.length; ++i) {
+        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
+        mission.html(orderStr[i] + ': ' + comMission[i]);
+    }
 }
 
 function createTikis() {
@@ -173,10 +207,8 @@ function createTikis() {
     stage.update();
 }
 
-function createCards() {
-    $('#card-wrapper li').append('<div class="cards"></div>');
-
-    var cards = $('#card-wrapper .cards');
+function setupCards() {
+    var cards = $('#card-wrapper .cards').css('opacity', '1');
 
     cards.eq(0).text('Up 1').on('click', function() {
         if (!hasSelected) return;
@@ -285,30 +317,6 @@ function createCards() {
             comAIMove();
         }, 1000);
     });
-}
-
-function setupOthers() {
-    var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
-    console.log(comMissionBoard);
-    $('#replay').click(resetGame);
-    $('#replay').next().change(function() {
-        //comMissionBoard.css('visibility', this.checked ? 'visible' : 'hidden');
-        comMissionBoard.fadeToggle();
-    });
-}
-
-function displayMissions(comMission, humMission) {
-    var orderStr = ['1st', '2nd', '3rd'];
-    var missionBoard = $('#mission-wrapper .mission-board:first-child');
-    for (var i = 0; i < humMission.length; ++i) {
-        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + humMission[i]);
-    }
-    missionBoard = missionBoard.next();
-    for (var i = 0; i < comMission.length; ++i) {
-        var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + comMission[i]);
-    }
 }
 
 })();

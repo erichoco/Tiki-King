@@ -10,6 +10,11 @@ function State() {
     this.comMission = [1, 3, 4]; // the AI's mission
     this.humMission = [0, 1, 2];
     this.tikiOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    this.init = function() {
+        this.comActions = [0, 0, 1, 2, 3, 4, 4];
+        this.humActions = [0, 0, 1, 2, 3, 4, 4];
+        // TODO: move createMission in main.js to here
+    }
 }
 
 
