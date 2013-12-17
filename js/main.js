@@ -208,7 +208,7 @@ function createTikis() {
 }
 
 function setupCards() {
-    var cards = $('#card-wrapper .cards').css('opacity', '1');
+    var cards = $('#card-wrapper .cards').css('opacity', '');
 
     cards.eq(0).text('Up 1').on('click', function() {
         if (!hasSelected) return;
