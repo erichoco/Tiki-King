@@ -6,7 +6,11 @@
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
 </head>
 <body>
-    <div id="content-wrapper">
+    <ul id="tabs">
+        <li><a href="#graphic">Graphic</a></li>
+        <li><a href="#test">Performance Testing</a></li>
+    </ul>
+    <div id="graphic" class="tabpage">
         <div>
             <button id="replay" type="button">Replay</button>
             <input type="checkbox" checked="true">Show CP Mission</input>
@@ -41,6 +45,12 @@
             </div>
         </div>
     </div>
+    <div id="test" class="tabpage">
+        <img style="width:50%; margin:50px 10px;" src="img/const.jpg">
+    </div>
+    <!--<div class="tabwrapper" id="tab2">
+        HOHOHO
+    </div>-->
     <script language="javascript" type="text/javascript" src="js/jquery-git.js"></script>
     <script src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/util.js"></script>

@@ -15,6 +15,8 @@ var selectMark;
 var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
+    initDOMElement();
+
     initParams();
 
     createCanvasStage();
@@ -27,6 +29,21 @@ $(document).ready(function() {
 });
 
 
+function initDOMElement() {
+    var pagedivs = $('.tabpage');
+
+    var tabsAnchor = $('#tabs li a');
+    tabsAnchor.first().addClass('selected');
+    tabsAnchor.on('click', function() {
+        var $this = $(this);
+        $this.addClass('selected')
+            .parent().siblings().find('a').removeClass('selected');
+        var activeTab = $this.attr('href').slice(1);
+        pagedivs.removeClass('hide').addClass('hide');
+        $('#'+activeTab).removeClass('hide');
+    });
+
+}
 
 // Initialize parameters in main.js
 function initParams() {
