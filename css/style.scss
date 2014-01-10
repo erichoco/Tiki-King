@@ -146,3 +146,19 @@ body {
         }
     }
 }
+
+#test-wrapper {
+    margin: 10px 2%;
+    width: 95%;
+    min-width: 600px;
+}
+
+#result-area {
+    margin: 10px auto;
+    padding: 5px;
+    border: 1px solid #888888;
+    background-color: #ffffff;
+    span {
+        margin: 10px 30px;
+    }
+}

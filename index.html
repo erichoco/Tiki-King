@@ -45,12 +45,28 @@
             </div>
         </div>
     </div>
-    <div id="test" class="tabpage">
-        <img style="width:50%; margin:50px 10px;" src="img/const.jpg">
+    <div id="test" class="tabpage hide">
+        <div id="test-wrapper">
+            <h2>Test Page</h2>
+            <div id="config-div">
+                <span>Agent&nbsp;1:&nbsp;</span>
+                <select name="agent1">
+                    <option value="simple">Simple</option>
+                </select>
+                <span>Agent&nbsp;2:&nbsp;</span>
+                <select name="agent2">
+                    <option value="simple">Simple</option>
+                </select>
+                <span>Iterations:&nbsp;</span>
+                <input type="text" name="iteratons">
+                <button id="go-btn">Go!</button>
+            </div>
+            <div id="result-area">
+                
+            </div>
+        </div>
+        <!--<img style="width:50%; margin:50px 10px;" src="img/const.jpg">-->
     </div>
-    <!--<div class="tabwrapper" id="tab2">
-        HOHOHO
-    </div>-->
     <script language="javascript" type="text/javascript" src="js/jquery-git.js"></script>
     <script src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/util.js"></script>

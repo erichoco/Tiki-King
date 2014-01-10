@@ -16,8 +16,10 @@ var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
     initDOMElement();
+    $('#tabs').find('li:nth-child(2) a').click();
 
     initParams();
+    displayResult($('#result-area'), [16, 9], 2)
 
     createCanvasStage();
     createCards();
@@ -29,12 +31,56 @@ $(document).ready(function() {
 });
 
 
+
+function agentPk() {
+    var configDiv = $('#test-wrapper #config-div');
+    var iter = configDiv.find('input')[0].value;
+    console.log(iter);
+    var agentOptions = configDiv.find('option');
+    console.log(agentOptions.length);
+    var agents = {};
+    //var agentNames = [], agents = [];
+    for (var i = 0; i < agentOptions.length; ++i) {
+        console.log(i);
+        var agentName = agentOptions[i].value;
+        agents.agentName = new Agent(agentName);
+    }
+    
+    var resultArea = $('#result-area').html('');
+    for (var i = 0; i < iter; ++i) {
+        while(1) {
+            for (var key in agents) {
+                agents[key].move();
+            }
+            var endingResult = askJudge();
+            if (null !== endingResult) {
+                dislayResult(resultArea, endingResult, i);
+                break;
+            }
+        }
+    }
+}
+
+function displayResult(area, results, iter) {
+    area.html(function(idx, oldhtml) {
+        var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
+        for (var i = 0; i < results.length; i++) {
+            content += '<span>Agent&nbsp;' + i + '&nbsp;score:&nbsp;'
+                             + results[i] + '</span>';
+        };
+        return oldhtml + content + '</br>';
+    })
+}
+
+
+
 function initDOMElement() {
     var pagedivs = $('.tabpage');
 
     var tabsAnchor = $('#tabs li a');
     tabsAnchor.first().addClass('selected');
-    tabsAnchor.on('click', function() {
+    tabsAnchor.on('click', function(e) {
+        e.preventDefault();
         var $this = $(this);
         $this.addClass('selected')
             .parent().siblings().find('a').removeClass('selected');
@@ -43,6 +89,7 @@ function initDOMElement() {
         $('#'+activeTab).removeClass('hide');
     });
 
+    $('#go-btn').on('click', agentPk);
 }
 
 // Initialize parameters in main.js
