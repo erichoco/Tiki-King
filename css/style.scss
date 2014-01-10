@@ -7,18 +7,58 @@ body {
     background-repeat: repeat-xy;
 }
 
-#content-wrapper {
-    margin: 10px auto;
+.tabwrapper {
+    margin: 0 auto;
     width: 75%;
+    #tab1 {
+
+    }
+    #tab2 {
+        display: none;
+    }
+}
+
+.hide {
+    display: none;
+}
+
+#tabs {
+    width: 75%;
+    margin: 0 auto;
+    margin-top: 20px;
+    list-style-type: none;
+    li {
+        display: inline;
+        a {
+            padding: 2px 10px;
+            background-color: #F6E1AE;
+            border: 5px solid #FFFFFF;
+            border-radius: 10px 10px 0 0;
+            border-bottom: none;
+            text-decoration: none;
+            &:hover {
+                opacity: 0.6;
+            }
+            &.selected {
+                padding-bottom: 6px;
+            }
+        }
+    }
+}
+
+//#content-wrapper {
+.tabpage {
+    margin: 0 auto;
+    width: 75%;
+    //width: 100%;
     min-width: 200px;
     background-color: #F6E1AE;
     border: 5px solid #FFFFFF;
     border-radius: 10px;
     box-shadow: 5px 5px 5px #888888;
-}
-
-#content-wrapper button {
+    button {
     margin: 10px;
+    }
 }
 
 #game-pad {

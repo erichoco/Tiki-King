@@ -6,17 +6,44 @@ body {
   background-image: url("../img/linen.png");
   background-repeat: repeat-xy; }
 
-#content-wrapper {
-  margin: 10px auto;
+.tabwrapper {
+  margin: 0 auto;
+  width: 75%; }
+  .tabwrapper #tab2 {
+    display: none; }
+
+.hide {
+  display: none; }
+
+#tabs {
+  width: 75%;
+  margin: 0 auto;
+  margin-top: 20px;
+  list-style-type: none; }
+  #tabs li {
+    display: inline; }
+    #tabs li a {
+      padding: 2px 10px;
+      background-color: #F6E1AE;
+      border: 5px solid #FFFFFF;
+      border-radius: 10px 10px 0 0;
+      border-bottom: none;
+      text-decoration: none; }
+      #tabs li a:hover {
+        opacity: 0.6; }
+      #tabs li a.selected {
+        padding-bottom: 6px; }
+
+.tabpage {
+  margin: 0 auto;
   width: 75%;
   min-width: 200px;
   background-color: #F6E1AE;
   border: 5px solid #FFFFFF;
   border-radius: 10px;
   box-shadow: 5px 5px 5px #888888; }
-
-#content-wrapper button {
-  margin: 10px; }
+  .tabpage button {
+    margin: 10px; }
 
 #game-pad {
   margin: 10px 2%;
