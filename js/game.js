@@ -27,7 +27,7 @@ function State() {
  */
 function resetGame()
 {
-   console.log("This is reset function!")\
+   console.log("This is reset function!");
    state = new State();
    player1Score = null;
    player2Score = null;

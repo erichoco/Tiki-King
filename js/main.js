@@ -35,13 +35,15 @@ $(document).ready(function() {
 function agentPk() {
     var configDiv = $('#test-wrapper #config-div');
     var iter = configDiv.find('input')[0].value;
-    console.log(iter);
+    if (isNaN(iter)) {
+        alert('Iterations value invalid.');
+        configDiv.find('input')[0].value = '';
+        return;
+    }
+
     var agentOptions = configDiv.find('option');
-    console.log(agentOptions.length);
     var agents = {};
-    //var agentNames = [], agents = [];
     for (var i = 0; i < agentOptions.length; ++i) {
-        console.log(i);
         var agentName = agentOptions[i].value;
         agents.agentName = new Agent(agentName);
     }
