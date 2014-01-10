@@ -1,7 +1,7 @@
 /* Implement AI here */
 
 var state = new State();
-console.log("AI's target", state.comMission);
+
 
 // This is the 'class' of State
 function State() {
@@ -181,6 +181,7 @@ function comAIMove()
     var allNextState = []
     var allNextAction = []
     var allNextMovingTiki = []
+    // get legal actions
     for(var i = 0 ; i < state.comActions.length ; i++)
         for(var j = 0 ; j < state.tikiOrder.length ; j++)
         {
