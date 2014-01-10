@@ -19,6 +19,7 @@ $(document).ready(function() {
     $('#tabs').find('li:nth-child(2) a').click();
 
     initParams();
+    displayResult($('#result-area'), [16, 9], 2)
 
     createCanvasStage();
     createCards();
@@ -33,25 +34,42 @@ $(document).ready(function() {
 
 function agentPk() {
     var configDiv = $('#test-wrapper #config-div');
+    var iter = configDiv.find('input')[0].value;
+    console.log(iter);
     var agentOptions = configDiv.find('option');
+    console.log(agentOptions.length);
     var agents = {};
     //var agentNames = [], agents = [];
     for (var i = 0; i < agentOptions.length; ++i) {
-        var agentName = agentOptions[i].val();
+        console.log(i);
+        var agentName = agentOptions[i].value;
         agents.agentName = new Agent(agentName);
     }
     
-    while(1) {
-        for (var key in agents) {
-            agents[key].move();
+    var resultArea = $('#result-area').html('');
+    for (var i = 0; i < iter; ++i) {
+        while(1) {
+            for (var key in agents) {
+                agents[key].move();
+            }
+            var endingResult = askJudge();
+            if (null !== endingResult) {
+                dislayResult(resultArea, endingResult, i);
+                break;
+            }
         }
-        var endingResult = 
     }
+}
 
-
-
-
-
+function displayResult(area, results, iter) {
+    area.html(function(idx, oldhtml) {
+        var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
+        for (var i = 0; i < results.length; i++) {
+            content += '<span>Agent&nbsp;' + i + '&nbsp;score:&nbsp;'
+                             + results[i] + '</span>';
+        };
+        return oldhtml + content + '</br>';
+    })
 }
 
 

@@ -4,8 +4,8 @@
 
 //player1 -> player ; player2 -> AI
 var state = new State();
-var player1Score = NULL;
-var player2Score = NULL;
+var player1Score = null;
+var player2Score = null;
 
 // This is the 'class' of State
 function State() {
@@ -27,10 +27,10 @@ function State() {
  */
 function resetGame()
 {
-   Console.log("This is reset function!")\
+   console.log("This is reset function!")\
    state = new State();
-   player1Score = NULL;
-   player2Score = NULL;
+   player1Score = null;
+   player2Score = null;
 
 }
 
@@ -44,7 +44,7 @@ function resetGame()
  //problem: What should be the input ? tikiID or tikiIdx?
 function tellJudge(playerID , tikiIdx , action)
 {
-    Console.log("This is tellJudge function")
+    console.log("This is tellJudge function")
 
     updateState(action , tikiIdx , playerID)
     checkGameEnd()
@@ -58,7 +58,7 @@ function tellJudge(playerID , tikiIdx , action)
  */
 function checkGameEnd()
 {
-    Console.log("This is checkGameEnd function")
+    console.log("This is checkGameEnd function")
     if ((0 === state.humActions.length && 0 === state.comActions.length) || state.tikiOrder.length <= 3) 
     {
         computeResult( player1Score , player2Score);
@@ -71,10 +71,14 @@ function checkGameEnd()
  */
 function askJudge()
 {
-    Console.log("This is askJudge function")
+    console.log("This is askJudge function")
 
-    if(player1Score == NULL || player2Score == NULL)
-        return NULL;
+    if(player1Score == null || player2Score == null) {
+        return null;
+    }
+    else {
+        return [player1Score, player2Score];
+    }
 }
 
 
