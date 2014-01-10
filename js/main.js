@@ -16,6 +16,7 @@ var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
     initDOMElement();
+    $('#tabs').find('li:nth-child(2) a').click();
 
     initParams();
 
@@ -29,12 +30,39 @@ $(document).ready(function() {
 });
 
 
+
+function agentPk() {
+    var configDiv = $('#test-wrapper #config-div');
+    var agentOptions = configDiv.find('option');
+    var agents = {};
+    //var agentNames = [], agents = [];
+    for (var i = 0; i < agentOptions.length; ++i) {
+        var agentName = agentOptions[i].val();
+        agents.agentName = new Agent(agentName);
+    }
+    
+    while(1) {
+        for (var key in agents) {
+            agents[key].move();
+        }
+        var endingResult = 
+    }
+
+
+
+
+
+}
+
+
+
 function initDOMElement() {
     var pagedivs = $('.tabpage');
 
     var tabsAnchor = $('#tabs li a');
     tabsAnchor.first().addClass('selected');
-    tabsAnchor.on('click', function() {
+    tabsAnchor.on('click', function(e) {
+        e.preventDefault();
         var $this = $(this);
         $this.addClass('selected')
             .parent().siblings().find('a').removeClass('selected');
@@ -43,6 +71,7 @@ function initDOMElement() {
         $('#'+activeTab).removeClass('hide');
     });
 
+    $('#go-btn').on('click', agentPk);
 }
 
 // Initialize parameters in main.js
