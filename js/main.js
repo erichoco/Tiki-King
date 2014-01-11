@@ -38,14 +38,19 @@ function agentPk() {
     console.log(iter);
     var agentOptions = configDiv.find('option');
     console.log(agentOptions.length);
-    var agents = {};
-    //var agentNames = [], agents = [];
+
+    // Create Agents
+    var agents = new Array();
     for (var i = 0; i < agentOptions.length; ++i) {
-        console.log(i);
-        var agentName = agentOptions[i].value;
-        agents.agentName = new Agent(agentName);
+        console.log('agentName', agentOptions[i].value);
+        console.log('agentNumber', i);
+        agents[i] = new Agent(agentOptions[i].value, i);
     }
+
+    // Create Missions
+    PKCreateMission();
     
+    // PK!!!
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         while(1) {
@@ -59,6 +64,19 @@ function agentPk() {
             }
         }
     }
+}
+
+function PKCreateMission() {
+    var Missions;
+    for (var k = 0; k < 2; k++) {
+        var naiveOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        for (var i = 0; i < 3; i++) { 
+            var mission = naiveOrder[Math.floor(Math.random() * naiveOrder.length)];
+            naiveOrder.splice(naiveOrder.indexOf(mission), 1);
+            Missions[k].push(mission);
+        }
+    }
+    state.Missions = Missions;
 }
 
 function displayResult(area, results, iter) {
@@ -166,7 +184,7 @@ function createMissions() {
         naiveOrder2.splice(naiveOrder2.indexOf(mission2), 1);
         comMission.push(mission1);
         humMission.push(mission2);
-    };
+    }
     if (comMission.compare(humMission)) {
         var temp = humMission[0];
         humMission[0] = humMission[1];
