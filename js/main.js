@@ -35,7 +35,12 @@ $(document).ready(function() {
 function agentPk() {
     var configDiv = $('#test-wrapper #config-div');
     var iter = configDiv.find('input')[0].value;
-    console.log(iter);
+    if (isNaN(iter)) {
+        alert('Iterations value invalid.');
+        configDiv.find('input')[0].value = '';
+        return;
+    }
+
     var agentOptions = configDiv.find('option');
     console.log(agentOptions.length);
 
@@ -54,8 +59,8 @@ function agentPk() {
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         while(1) {
-            for (var key in agents) {
-                agents[key].move();
+            for (var j = 0; j < agents.length; j++) {
+                agents[j].move();
             }
             var endingResult = askJudge();
             if (null !== endingResult) {
