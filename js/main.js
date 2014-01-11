@@ -15,21 +15,17 @@ var selectMark;
 var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
-    initDOMElement();
-
     initParams();
-    displayResult($('#result-area'), [16, 9], 2)
-
     createCanvasStage();
     createCards();
     setupOthers();
-
     setupAnimVar();
-
     startGame();
+
+    //displayResult($('#result-area'), [16, 9], 2)
+    setupTest();
     $('#tabs').find('li:nth-child(2) a').click();
 });
-
 
 
 function agentPk() {
@@ -42,27 +38,36 @@ function agentPk() {
     }
 
     var agentOptions = configDiv.find('option');
-    console.log(agentOptions.length);
+    var agentNames = [];
+    for (var i = 0; i < agentOptions.length; ++i) {
+        if ('none' != agentOptions[i].value) {
+            agentNames.push(agentOptions[i].value);
+        }
+    }
+    var missions = createPKMissions(agentNames.length);
+    AllMissions = missions; // Set up global var in game.js
+
+    setupGame(agentNames.length, missions.slice(0));
 
     // Create Agents
     var agents = new Array();
-    for (var i = 0; i < agentOptions.length; ++i) {
-        console.log('agentName', agentOptions[i].value);
-        console.log('agentNumber', i);
-        agents[i] = new Agent(agentOptions[i].value, i);
+    for (var i = 0; i < agentNames.length; ++i) {
+        agents[i] = new Agent(agentNames[i].value, i);
+        agents[i].mission = missions[i];
     }
 
-    // Create Missions
-    PKCreateMission();
-    
     // PK!!!
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         while(1) {
+            var endingResult;
             for (var j = 0; j < agents.length; j++) {
                 agents[j].move();
+                endingResult = askJudge();
+                if (null !== endingResult) {
+                    break;
+                }
             }
-            var endingResult = askJudge();
             if (null !== endingResult) {
                 dislayResult(resultArea, endingResult, i);
                 break;
@@ -71,17 +76,34 @@ function agentPk() {
     }
 }
 
-function PKCreateMission() {
-    var Missions;
-    for (var k = 0; k < 2; k++) {
-        var naiveOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-        for (var i = 0; i < 3; i++) { 
-            var mission = naiveOrder[Math.floor(Math.random() * naiveOrder.length)];
-            naiveOrder.splice(naiveOrder.indexOf(mission), 1);
-            Missions[k].push(mission);
+function createPKMissions(agentNum) {
+    var missionsLi = [];
+    var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+
+    for (var i = 0; i < agentNum; ++i) {
+        var singleMission = [];
+        var randIdx = shuffle([0, 1, 2]);
+        for (var j = 0; j < 3; ++j) {
+            singleMission.push(
+                naiveOrder[randIdx[j]][Math.floor(Math.random()*3)]
+            );
+        }
+
+        var dup_flag = false;
+        for (var j = 0; j < missionsLi.length; ++j) {
+            if (singleMission.compare(missionsLi[j])) {
+                dup_flag = true;
+                break;
+            }
+        }
+        if (dup_flag) {
+            --i;
+        } else {
+            missionsLi.push(singleMission);
         }
     }
-    state.Missions = Missions;
+
+    return missionsLi;
 }
 
 function displayResult(area, results, iter) {
@@ -92,12 +114,12 @@ function displayResult(area, results, iter) {
                              + results[i] + '</span>';
         };
         return oldhtml + content + '</br>';
-    })
+    });
 }
 
 
 
-function initDOMElement() {
+function setupTest() {
     var pagedivs = $('.tabpage');
 
     var tabsAnchor = $('#tabs li a');
@@ -110,6 +132,8 @@ function initDOMElement() {
         var activeTab = $this.attr('href').slice(1);
         pagedivs.removeClass('hide').addClass('hide');
         $('#'+activeTab).removeClass('hide');
+
+        UI_Mode = ~~(activeTab == 'graphic');
     });
 
     $('#go-btn').on('click', agentPk);
@@ -133,7 +157,7 @@ function setupAnimVar() {
 
 function startGame() {
     createTikis();
-    createMissions();
+    displayMissions(createPKMissions(2));
     setupCards();
     setupAnimVar();
 }
@@ -143,7 +167,7 @@ function resetGame() {
     initParams();
 
     createTikis();
-    createMissions();
+    displayMissions(createPKMissions(2));
     setupCards();
     setupAnimVar();
     state.init();
@@ -176,9 +200,7 @@ function setupOthers() {
         comMissionBoard.fadeToggle();
     });
 }
-
-
-
+/*
 function createMissions() {
     var naiveOrder1 = naiveOrder2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     var comMission = [], humMission = [];
@@ -200,19 +222,19 @@ function createMissions() {
     console.log('Your mission: ' + humMission);
 
     displayMissions(comMission, humMission);
-}
+}*/
 
-function displayMissions(comMission, humMission) {
+function displayMissions(missions) {
     var orderStr = ['1st', '2nd', '3rd'];
     var missionBoard = $('#mission-wrapper .mission-board:first-child');
-    for (var i = 0; i < humMission.length; ++i) {
+    for (var i = 0; i < missions[0].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + humMission[i]);
+        mission.html(orderStr[i] + ': ' + missions[0][i]);
     }
     missionBoard = missionBoard.next();
-    for (var i = 0; i < comMission.length; ++i) {
+    for (var i = 0; i < missions[1].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + comMission[i]);
+        mission.html(orderStr[i] + ': ' + missions[1][i]);
     }
 }
 
