@@ -15,21 +15,17 @@ var selectMark;
 var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
-    initDOMElement();
-
     initParams();
-    displayResult($('#result-area'), [16, 9], 2)
-
     createCanvasStage();
     createCards();
     setupOthers();
-
     setupAnimVar();
-
     startGame();
+
+    //displayResult($('#result-area'), [16, 9], 2)
+    setupTest();
     $('#tabs').find('li:nth-child(2) a').click();
 });
-
 
 
 function agentPk() {
@@ -123,7 +119,7 @@ function displayResult(area, results, iter) {
 
 
 
-function initDOMElement() {
+function setupTest() {
     var pagedivs = $('.tabpage');
 
     var tabsAnchor = $('#tabs li a');
@@ -136,6 +132,8 @@ function initDOMElement() {
         var activeTab = $this.attr('href').slice(1);
         pagedivs.removeClass('hide').addClass('hide');
         $('#'+activeTab).removeClass('hide');
+
+        UI_Mode = ~~(activeTab == 'graphic');
     });
 
     $('#go-btn').on('click', agentPk);
