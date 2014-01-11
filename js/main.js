@@ -45,7 +45,7 @@ function agentPk() {
     var agents = {};
     for (var i = 0; i < agentOptions.length; ++i) {
         var agentName = agentOptions[i].value;
-        agents.agentName = new Agent(agentName);
+        agents[agentName] = new Agent(agentName, i);
     }
     
     var resultArea = $('#result-area').html('');
