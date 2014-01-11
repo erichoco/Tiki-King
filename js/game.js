@@ -115,17 +115,6 @@ function computeResult( winner  , comScore) {
           '\n' + winner + ' Wins');
 }
 
-
-
-function copyState( stateToBeCopied,targetState)
-{
-    stateToBeCopied.comActions = targetState.comActions.slice(0);
-    stateToBeCopied.humActions = targetState.humActions.slice(0);
-    stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0);
-    stateToBeCopied.comMission = targetState.comMission.slice(0);
-    stateToBeCopied.humMission = targetState.humMission.slice(0);
-}
-
 // The following functions are related to update state
 function updateState(action, tikiIdx, player) {
     //console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
