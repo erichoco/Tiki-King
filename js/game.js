@@ -34,9 +34,10 @@ function setupGame(   pNumber , playerMissions )
 
 
    initialAction = [0 , 0 , 1 , 2 , 3 , 4 ,4];
-   state.playersAction = new Array();   
-   for(var i = 0 ; i < playersNumber ; i++)
+   state.playersAction = new Array();
+   for(var i = 0 ; i < playersNumber ; i++) {
       state.playersAction[i] = initialAction.slice(0);
+   }
 
    initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
    state.tikiOrder = initialTikiOrder.slice(0);

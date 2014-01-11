@@ -37,7 +37,7 @@ function agentPk() {
         return;
     }
 
-    var agentOptions = configDiv.find('option');
+    var agentOptions = configDiv.find('select');
     var agentNames = [];
     for (var i = 0; i < agentOptions.length; ++i) {
         if ('none' != agentOptions[i].value) {
@@ -116,8 +116,6 @@ function displayResult(area, results, iter) {
         return oldhtml + content + '</br>';
     });
 }
-
-
 
 function setupTest() {
     var pagedivs = $('.tabpage');
