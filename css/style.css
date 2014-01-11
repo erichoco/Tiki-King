@@ -37,7 +37,7 @@ body {
 .tabpage {
   margin: 0 auto;
   width: 75%;
-  min-width: 200px;
+  min-width: 700px;
   background-color: #F6E1AE;
   border: 5px solid #FFFFFF;
   border-radius: 10px;
