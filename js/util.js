@@ -29,3 +29,38 @@ Array.prototype.compare = function (array) {
     }
     return true;
 }
+
+function copyState( stateToBeCopied,targetState)
+{
+    for (var i = 0; i < targetState.playersAction.length; i++)
+        stateToBeCopied.playersAction[i] = targetState.playersAction[i].slice(0);
+    stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0);
+    // stateToBeCopied = jQuery.extend(true, {}, targetState);
+}
+
+function computeScore(tikiOrder, mission)
+{
+    var score = 0;
+    for( var i = 0 ; i < mission.length ; i++) {
+      idx = getTikiIndex(tikiOrder, mission[i]);
+      if(idx <= i)
+        {
+            if (i == 0) score+=9;
+            else if (i == 1) score+=5;
+            else if (i == 2) score +=2;
+        }
+    }
+
+    return score;
+}
+
+function getTikiIndex(tikiOrder, tikiId) 
+{
+    var idx = 0;
+    for(var i = 0 ; i < tikiOrder.length ; i++)
+        if (tikiOrder[i] == tikiId)
+            {
+                idx = i ;
+                return idx;
+            }
+}

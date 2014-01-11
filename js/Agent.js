@@ -1,29 +1,24 @@
 
-function Agent(agentName, agentNumber) {
+function Agent(agentName, agentNumber, mission) {
 	this.agentName = agentName;
     this.agentNumber = agentNumber;
+    this.mission = mission;
 	this.move = move;
 	function move() {
-		"""
-		TODO: Change state
-		"""
 		var allNextState = [];
     	var allNextAction = [];
     	var allNextMovingTiki = [];
     	// get legal actions
-    	for(var i = 0 ; i < state.comActions.length ; i++) {
+    	for(var i = 0 ; i < state.playersAction[this.agentNumber].length ; i++) {
         	for(var j = 0 ; j < state.tikiOrder.length ; j++)
         	{
-            	var illegal = checkLegalAction(state.comActions[i] , state.tikiOrder[j] , state);
+            	var illegal = checkLegalAction(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j]);
             	if (illegal == 1) 
             	    continue;
-
-            	var nextState = getNextState(state.comActions[i] , state.tikiOrder[j] , state);
+            	var nextState = getNextState(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j], this.agentNumber);
             	allNextState.push(nextState);
             	allNextAction.push(i);
             	allNextMovingTiki.push(j);
-        
-            	//console.log("The nextState oeder is " , nextState.tikiOrder)
         	}
     	}
 
@@ -32,7 +27,7 @@ function Agent(agentName, agentNumber) {
     	var maxValue = -100000;
     	for(var i = 0 ; i < allNextState.length ; i++)
     	{
-        	var tmpValue = evaluationFunction(allNextState[i]);
+        	var tmpValue = evaluationFunction(allNextState[i], this.mission);
         	if(tmpValue > maxValue)
         	{
           		maxValue = tmpValue;
@@ -40,26 +35,25 @@ function Agent(agentName, agentNumber) {
         	}
     	}
 
-    	// Update state with best action
-    	console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
-    	var operation = state.comActions[allNextAction[maxIndex]];
-    	updateState(operation, allNextMovingTiki[maxIndex], 0);
+    	// Call game.js to update state with best action
+    	// console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
+    	var operation = state.playersAction[this.agentNumber][allNextAction[maxIndex]];
 
-    	// For debugging
-    	var AIscore = computeAISocre(state);
-    	console.log("AI now scores ", AIscore);
+        if (operation === undefined || allNextMovingTiki[maxIndex] === undefined || maxIndex === undefined) {
+            console.log('operation:', operation);
+            console.log('allNextMovingTiki[maxIndex]:', allNextMovingTiki[maxIndex]);
+            console.log('maxIndex:', maxIndex);
+            debugger;
+        }
+    	tellJudge(agentNumber, allNextMovingTiki[maxIndex], operation);
 	}
-
-	
-
 }
 
 
-function checkLegalAction(action , tikiId , targetState)
+function checkLegalAction(targetState, action, tikiId)
 {
 
-    index = getTikiIndex(tikiId, targetState);
-
+    var index = getTikiIndex(targetState.tikiOrder, tikiId);
     var illegal = 0;
     if(action == 0)
     {
@@ -76,53 +70,59 @@ function checkLegalAction(action , tikiId , targetState)
         if(index <= 2)
             illegal = 1;
     }
-
     else if(action == 3)
     {
         if (index >= targetState.tikiOrder.length-1)
             illegal = 1;
     }
 
-    //console.log("In checkLegalAction , The tikiIdx , index , action , illegal " , tikiIdx , index , action , illegal)
-
+    //console.log("In checkLegalAction , The tikiIdx , index , action , illegal " , tikiIdx , index , action , illegal);
     return illegal;
 
 }
 
-function getTikiIndex(tikiId , targetState)
-{
-    var idx = 0;
-    for(var i = 0 ; i < targetState.tikiOrder.length ; i++)
-        if (targetState.tikiOrder[i] == tikiId)
-            {
-            	idx = i ;
-            	return idx;
-            }
 
-     //console.log('The tiki you try to find is not in tikiOrder , which may be killed...')
-     //console.log('Tiki Order is ' , targetState.tikiOrder)
-     //console.log('The tikiOrder ', tikiIdx , ' , which is not in tikiOrder!')
-}
 
-function getNextState(action , tikiId , currentState)  
+function getNextState(currentState, action, tikiId, player)  
 {
 	var nextState = new State();
-	copyState(currentState, nextState);
+	copyState(nextState, currentState);
 
-    if (action == 0)
-        updateStateWithMoveup(1,tikiId , nextState);
-    else if (action == 1)
-        updateStateWithMoveup(2,tikiId, nextState);
-    else if (action == 2)
-        updateStateWithMoveup(3,tikiId, nextState); 
-    else if (action == 3)
-        updateStateWithPush(tikiId, nextState);
-    else if (action == 4)
-        updateStateWithKill(nextState);
+    if (action == 0) {
+        updateStateWithMoveup(1,tikiId , nextState , player , action);
+    }
+    else if (action == 1) {
+        updateStateWithMoveup(2,tikiId, nextState, player , action);
+    }
+    else if (action == 2) {
+        updateStateWithMoveup(3,tikiId, nextState , player , action);
+    }
+    else if (action == 3) {
+        updateStateWithPush(tikiId, nextState , player , action);
+    }
+    else if (action == 4) {
+        updateStateWithKill(nextState , player , action);
+    }
+   
+    else {
+        console.log('ERROR: invalid "player" passed to getNextState(), action:', action);
+    }
 
     return nextState;
 }
 
+function evaluationFunction(currentState, mission)
+{
+    var score = computeScore(currentState.tikiOrder, mission);
+    var distance = 0;
+    var idx;
+    for( var i = 0 ; i < mission.length ; i++) {
+        idx = getTikiIndex(currentState.tikiOrder, mission[i]);
+        if(idx > i) {
+            distance += Math.abs(idx-i);
+        }
+    }
 
-
+    return score*10 - distance;
+}
 
