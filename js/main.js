@@ -42,25 +42,72 @@ function agentPk() {
     }
 
     var agentOptions = configDiv.find('option');
-    var agents = {};
+    var agentNames = [];
     for (var i = 0; i < agentOptions.length; ++i) {
-        var agentName = agentOptions[i].value;
-        agents[agentName] = new Agent(agentName, i);
+        if ('none' != agentOptions[i].value) {
+            agentNames.push(agentOptions[i].value);
+        }
     }
-    
+    var missions = createPKMissions(agentNames.length);
+    AllMissions = missions; // Set up global var in game.js
+
+    setupGame(agentNames.length, missions.slice(0));
+
+    // Create Agents
+    var agents = new Array();
+    for (var i = 0; i < agentNames.length; ++i) {
+        agents[i] = new Agent(agentNames[i].value, i);
+        agents[i].mission = missions[i];
+    }
+
+    // PK!!!
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         while(1) {
-            for (var key in agents) {
-                agents[key].move();
+            var endingResult;
+            for (var j = 0; j < agents.length; j++) {
+                agents[j].move();
+                endingResult = askJudge();
+                if (null !== endingResult) {
+                    break;
+                }
             }
-            var endingResult = askJudge();
             if (null !== endingResult) {
                 dislayResult(resultArea, endingResult, i);
                 break;
             }
         }
     }
+}
+
+function createPKMissions(agentNum) {
+    var missionsLi = [];
+    var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+
+    for (var i = 0; i < agentNum; ++i) {
+        var singleMission = [];
+        var randIdx = shuffle([0, 1, 2]);
+        for (var j = 0; j < 3; ++j) {
+            singleMission.push(
+                naiveOrder[randIdx[j]][Math.floor(Math.random()*3)]
+            );
+        }
+
+        var dup_flag = false;
+        for (var j = 0; j < missionsLi.length; ++j) {
+            if (singleMission.compare(missionsLi[j])) {
+                dup_flag = true;
+                break;
+            }
+        }
+        if (dup_flag) {
+            --i;
+        } else {
+            missionsLi.push(singleMission);
+        }
+    }
+
+    return missionsLi;
 }
 
 function displayResult(area, results, iter) {
@@ -71,7 +118,7 @@ function displayResult(area, results, iter) {
                              + results[i] + '</span>';
         };
         return oldhtml + content + '</br>';
-    })
+    });
 }
 
 
@@ -112,7 +159,7 @@ function setupAnimVar() {
 
 function startGame() {
     createTikis();
-    createMissions();
+    displayMissions(createPKMissions(2));
     setupCards();
     setupAnimVar();
 }
@@ -122,7 +169,7 @@ function resetGame() {
     initParams();
 
     createTikis();
-    createMissions();
+    displayMissions(createPKMissions(2));
     setupCards();
     setupAnimVar();
     state.init();
@@ -155,9 +202,7 @@ function setupOthers() {
         comMissionBoard.fadeToggle();
     });
 }
-
-
-
+/*
 function createMissions() {
     var naiveOrder1 = naiveOrder2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     var comMission = [], humMission = [];
@@ -168,7 +213,7 @@ function createMissions() {
         naiveOrder2.splice(naiveOrder2.indexOf(mission2), 1);
         comMission.push(mission1);
         humMission.push(mission2);
-    };
+    }
     if (comMission.compare(humMission)) {
         var temp = humMission[0];
         humMission[0] = humMission[1];
@@ -179,19 +224,19 @@ function createMissions() {
     console.log('Your mission: ' + humMission);
 
     displayMissions(comMission, humMission);
-}
+}*/
 
-function displayMissions(comMission, humMission) {
+function displayMissions(missions) {
     var orderStr = ['1st', '2nd', '3rd'];
     var missionBoard = $('#mission-wrapper .mission-board:first-child');
-    for (var i = 0; i < humMission.length; ++i) {
+    for (var i = 0; i < missions[0].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + humMission[i]);
+        mission.html(orderStr[i] + ': ' + missions[0][i]);
     }
     missionBoard = missionBoard.next();
-    for (var i = 0; i < comMission.length; ++i) {
+    for (var i = 0; i < missions[1].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + comMission[i]);
+        mission.html(orderStr[i] + ': ' + missions[1][i]);
     }
 }
 

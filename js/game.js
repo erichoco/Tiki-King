@@ -9,14 +9,31 @@ var player2Score = null;
 
 // This is the 'class' of State
 function State() {
+    // Old Actions and Missions
     this.comActions = [0, 0, 1, 2, 3, 4, 4]; // actions of computer player remained
     this.humActions = [0, 0, 1, 2, 3, 4, 4]; // actions of human player remained
     this.comMission = [1, 3, 4]; // the AI's mission
     this.humMission = [0, 1, 2];
+
+    // New Actions and Missions
+    this.Actions = new Array();
+    this.Missions = new Array();
+    for (var i=0; i<2; i++) { // Default two players!!!
+        this.Actions[i] = [0, 0, 1, 2, 3, 4, 4];
+        this.Missions[i] = [0, 3, 6];
+    }
+
     this.tikiOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     this.init = function() {
+        // Old Actions
         this.comActions = [0, 0, 1, 2, 3, 4, 4];
         this.humActions = [0, 0, 1, 2, 3, 4, 4];
+
+        // New Actions
+        for (var i=0; i<2; i++) { // Default two players!!!
+            this.Actions[i] = [0, 0, 1, 2, 3, 4, 4];
+        }
+
         // TODO: move createMission in main.js to here
     }
 }
