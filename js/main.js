@@ -16,7 +16,6 @@ var upCardRemain, killCardRemain;
 
 $(document).ready(function() {
     initDOMElement();
-    $('#tabs').find('li:nth-child(2) a').click();
 
     initParams();
     displayResult($('#result-area'), [16, 9], 2)
@@ -28,6 +27,7 @@ $(document).ready(function() {
     setupAnimVar();
 
     startGame();
+    $('#tabs').find('li:nth-child(2) a').click();
 });
 
 
