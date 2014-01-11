@@ -14,8 +14,8 @@ var UI_Mode = 0;  // 0 testMode ; 1 UI_mode
 // This is the 'class' of State
 function State() {
 
-    this.playersAction = null;
-    this.tikiOrder = null;
+    this.playersAction = new Array();
+    this.tikiOrder = new Array();
 }
 
 
@@ -35,13 +35,12 @@ function setupGame(   pNumber , playerMissions )
 
    initialAction = [0 , 0 , 1 , 2 , 3 , 4 ,4];
    state.playersAction = new Array();   
-   for(var i = 0 ; i < playersNumber ; i++)
+   for(var i = 0 ; i < playersNumber ; i++) 
       state.playersAction[i] = initialAction.slice(0);
 
    initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
    state.tikiOrder = initialTikiOrder.slice(0);
    gameEnd = 0;
-
 
 }
 /*
@@ -68,6 +67,10 @@ function getState()
 function tellJudge(playerID , tikiIdx , action)
 {
     console.log("This is tellJudge function")
+    if (action == undefined) {
+        console.log("Undefined action:", action);
+        debugger;
+    }
     updateState(action , tikiIdx , playerID)
     checkGameEnd()
 }
@@ -80,13 +83,23 @@ function tellJudge(playerID , tikiIdx , action)
 function checkGameEnd()
 {
     console.log("This is checkGameEnd function")
-    if ((0 === state.humActions.length && 0 === state.comActions.length) || state.tikiOrder.length <= 3) 
-    {
+    
+    var flagOrder = 0;
+    if (state.tikiOrder.length <= 3) {
+        flagOrder = 1;
+    }
+    var flag = 1;
+    for (var i = 0; i < state.playersAction.length; i++) {
+        if (0 != state.playersAction[i].length) {
+            flag = 0;break;
+        }
+    }
+    if (flag || flagOrder) {
+        console.log('GAME END');
         playerScores = new Array();
         for(var  i = 0 ; i < playersNumber ; i++)         
-            playerScores[i] = computeScore( allMissions[i] , state.tikiOrder);
+            playerScores[i] = computeScore(state.tikiOrder, allMissions[i]);
         gameEnd = 1;
-         
     }
 }
 
@@ -127,7 +140,8 @@ function computeResult( winner  , comScore) {
 
 // The following functions are related to update state
 function updateState(action, tikiIdx, player) {
-    //console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+    console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+    console.log('Current Order:', state.tikiOrder);
     var tikiId = state.tikiOrder[tikiIdx]
  
 
@@ -158,10 +172,10 @@ function updateState(action, tikiIdx, player) {
     }
    
     else {
-        console.log('ERROR: invalid "player" passed to updateState()')
+        console.log('ERROR: invalid "player" passed to updateState(), action:', action);
     }
 
-    console.log('Current Order:', state.tikiOrder)
+    console.log('Current Order after update:', state.tikiOrder)
     
 }
 
@@ -174,7 +188,7 @@ function updateStateWithMoveup(moveup , tikiId , targetState , playerID , action
 
     var tmp = tikiId
     var moveTime = 0
-    var tikiIndex = getTikiIndex(tikiId , targetState)
+    var tikiIndex = getTikiIndex(targetState.tikiOrder, tikiId)
 
     while(moveTime<moveup){
         var index = tikiIndex - moveTime
@@ -190,7 +204,7 @@ function updateStateWithMoveup(moveup , tikiId , targetState , playerID , action
 function updateStateWithPush(tikiId , targetState , playerID , actionID)
 {
 
-    var tikiIndex = getTikiIndex(tikiId , targetState);
+    var tikiIndex = getTikiIndex(targetState.tikiOrder, tikiId);
     var index = tikiIndex;
 
 

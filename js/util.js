@@ -32,11 +32,13 @@ Array.prototype.compare = function (array) {
 
 function copyState( stateToBeCopied,targetState)
 {
-    stateToBeCopied.Actions = targetState.Actions.slice(0);
+    for (var i = 0; i < targetState.playersAction.length; i++)
+        stateToBeCopied.playersAction[i] = targetState.playersAction[i].slice(0);
     stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0);
+    // stateToBeCopied = jQuery.extend(true, {}, targetState);
 }
 
-function computeSocre(tikiOrder, mission)
+function computeScore(tikiOrder, mission)
 {
     var score = 0;
     for( var i = 0 ; i < mission.length ; i++) {
