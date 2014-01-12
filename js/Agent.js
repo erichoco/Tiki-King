@@ -7,7 +7,7 @@ function Agent() {
 }
 
 Agent.prototype.init = function(agentName, agentNumber, mission) {
-    console.log(agentName);
+    // console.log(agentName);
     this.agentName = agentName;
     this.agentNumber = agentNumber;
     this.mission = mission;
@@ -52,7 +52,6 @@ function minimaxMove() {
         scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber));
     };
     var bestScore = Math.max.apply(null, scores);
-    //console.log(bestScore);
 
     var bestMove = nextMoves[scores.indexOf(bestScore)];
 
@@ -65,8 +64,10 @@ function minimax(thisAgent, currentState, depth, agentNumber) {
         depth--;
     }
     var legalActions = getLegalActions(currentState, agentNumber);
+    //console.log(legalActions.length);
     if (0 === depth || 0 === legalActions.length) {
         var score = evaluationFunction(currentState, thisAgent.mission);
+        //console.log(score);
         return score;
         // return evaluationFunction(currentState, thisAgent.mission)
     }
@@ -74,14 +75,12 @@ function minimax(thisAgent, currentState, depth, agentNumber) {
     var numOfAgent = currentState.playersAction.length;
     var currentScores = [];
 
-    for (var i = 1; i < numOfAgent; i++) {
-        var nextAgentNum = (agentNumber+i) % numOfAgent;
-        for (var j = 0; j < legalActions.length; j++) {
-            var nextState = getNextState(currentState, 
-                legalActions[j].action, legalActions[j].tiki, nextAgentNum);
-            var score = minimax(thisAgent, nextState, depth, nextAgentNum);
-            currentScores.push(score);
-        }
+    var nextAgentNum = (agentNumber+1) % numOfAgent;
+    for (var j = 0; j < legalActions.length; j++) {
+        var nextState = getNextState(currentState, 
+            legalActions[j].action, legalActions[j].tiki, nextAgentNum);
+        var score = minimax(thisAgent, nextState, depth, nextAgentNum);
+        currentScores.push(score);
     }
 
     if (agentNumber === thisAgent.agentNumber) {

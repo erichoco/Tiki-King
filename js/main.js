@@ -45,6 +45,7 @@ function agentPk() {
         }
     }
 
+    var results = [];
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         var missions = createPKMissions(agentNames.length);
@@ -72,7 +73,8 @@ function agentPk() {
                 }
             }
             if (null !== endingResult) {
-                console.log('#', i+1, 'agent0:', endingResult[0], 'agent1', endingResult[1]);
+                showResult(i, endingResult);
+                results.push(endingResult);
                 //displayResult(resultArea, endingResult, i);
                 break;
             }
@@ -80,6 +82,14 @@ function agentPk() {
     }
 }
 
+function showResult(iter, result) {
+    var score = '';
+    for (var i = 0; i < result.length; i++) {
+        score += ('A' + (i+1) + ': ' + result[i] + ' ');
+    };
+    console.log('#', iter+1, score);
+}
+/*
 function displayResult(area, results, iter) {
     area.html(function(idx, oldhtml) {
         var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
@@ -90,6 +100,7 @@ function displayResult(area, results, iter) {
         return oldhtml + content + '</br>';
     });
 }
+*/
 
 function setupTest() {
     var pagedivs = $('.tabpage');
