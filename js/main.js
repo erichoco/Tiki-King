@@ -24,7 +24,7 @@ $(document).ready(function() {
 
     //displayResult($('#result-area'), [16, 9], 2)
     setupTest();
-    $('#tabs').find('li:nth-child(2) a').click();
+    //$('#tabs').find('li:nth-child(2) a').click();
 });
 
 
@@ -50,19 +50,16 @@ function agentPk() {
     for (var i = 0; i < iter; ++i) {
         var missions = createPKMissions(agentNames.length);
         allMissions = missions; // Set up global var in game.js
-        //setupGame(agentNames.length, missions.slice(0));
 
         // Create Agents
         var agents = new Array();
         for (var j = 0; j < agentNames.length; ++j) {
             agents[j] = new Agent();
             agents[j].init(agentNames[j], j, missions[j]);
-            // agents[i].mission = missions[i];
         }
 
         // PK!!!
-    // for (var i = 0; i < iter; ++i) {
-        setupGame(agentNames.length, missions.slice(0));
+        setupGame(agentNames.length, missions.slice());
         while(1) {
             var endingResult;
             for (var j = 0; j < agents.length; j++) {
@@ -187,7 +184,7 @@ function setupOthers() {
     var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
     //console.log(comMissionBoard);
     $('#replay').click(resetGame);
-    $('#replay').next().change(function() {
+    $('#setting input').change(function() {
         comMissionBoard.fadeToggle();
     });
 }

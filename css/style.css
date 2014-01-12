@@ -45,6 +45,12 @@ body {
   .tabpage button {
     margin: 10px; }
 
+#setting {
+  margin: 20px 4% 0 4%;
+  width: 90%; }
+  #setting button {
+    float: right; }
+
 #game-pad {
   margin: 10px 2%;
   width: 95%;

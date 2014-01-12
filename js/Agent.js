@@ -7,7 +7,6 @@ function Agent() {
 }
 
 Agent.prototype.init = function(agentName, agentNumber, mission) {
-    // console.log(agentName);
     this.agentName = agentName;
     this.agentNumber = agentNumber;
     this.mission = mission;
@@ -15,7 +14,16 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
             case 'simple':
                 this.move = reflexMove;
                 break;
-            case 'minimax':
+            case 'minimax1':
+                this.depth = 1;
+                this.move = minimaxMove;
+                break;
+            case 'minimax2':
+                this.depth = 2;
+                this.move = minimaxMove;
+                break;
+            case 'minimax3':
+                this.depth = 3;
                 this.move = minimaxMove;
                 break;
             default:
@@ -46,7 +54,7 @@ function minimaxMove() {
         console.log('state len 0:', myActions, availTiki);
     }*/
 
-    var depth = 2; // default minimax depth
+    var depth = this.depth; // default minimax depth
     var scores = [];
     for (var i = 0; i < nextStates.length; i++) {
         scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber, 
