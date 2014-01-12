@@ -88,14 +88,16 @@ function checkGameEnd()
     var flag = 1;
     for (var i = 0; i < state.playersAction.length; i++) {
         if (0 != state.playersAction[i].length) {
-            flag = 0;break;
+            flag = 0;
+            break;
         }
     }
     if (flag || flagOrder) {
         // console.log('GAME END');
         playerScores = new Array();
-        for(var  i = 0 ; i < playersNumber ; i++)         
+        for(var  i = 0 ; i < playersNumber ; i++) {
             playerScores[i] = computeScore(state.tikiOrder, allMissions[i]);
+        }
         gameEnd = 1;
     }
 }
@@ -109,8 +111,9 @@ function askJudge()
     // console.log("This is askJudge function")
 
 
-    if(gameEnd == 0) 
+    if(gameEnd == 0) {
         return null;
+    }
     else {
         return playerScores;
     }
@@ -166,7 +169,7 @@ function updateState(action, tikiIdx, player) {
             killLast();
     }
     else {
-        console.log('ERROR: invalid "player" passed to updateState(), action:', action);
+        console.log('ERROR: invalid "action" passed to updateState(), action:', action);
     }
 
     //console.log('Current Order after update:', state.tikiOrder)

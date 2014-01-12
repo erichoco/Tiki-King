@@ -15,12 +15,81 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
             case 'simple':
                 this.move = reflexMove;
                 break;
+            case 'minimax':
+                this.move = minimaxMove;
+                break;
             default:
                 alert('haha');
-                this.move = reflexMove;
-                break;
     }
 };
+
+function minimaxMove() {
+    var myActions = state.playersAction[this.agentNumber];
+    var availTiki = state.tikiOrder;
+
+    var nextMoves = [];
+    var nextStates = [];
+    for (var i = 0; i < myActions.length; ++i) {
+        for (var j = 0; j < availTiki.length; ++j) {
+            if (0 === checkLegalAction(state, myActions[i], availTiki[j])) {
+                nextMoves.push({
+                    'tiki': availTiki[j],
+                    'action': myActions[i],
+                });
+                nextStates.push(
+                    getNextState(state, myActions[i], availTiki[j], this.agentNumber)
+                );
+            }
+        }
+    }
+    if (0 === nextStates.length) {
+        console.log('state len 0:', myActions, availTiki);
+    }
+
+    var depth = 1; // default minimax depth
+    var scores = [];
+    for (var i = 0; i < nextStates.length; i++) {
+        scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber));
+    };
+    var bestScore = Math.max.apply(null, scores);
+    //console.log(bestScore);
+
+    var bestMove = nextMoves[scores.indexOf(bestScore)];
+
+    tellJudge(this.agentNumber, bestMove.tiki, bestMove.action);
+}
+
+// thisAgent is the original agent calling move function
+function minimax(thisAgent, currentState, depth, agentNumber) {
+    if (agentNumber === thisAgent.agentNumber) {
+        depth--;
+    }
+    var legalActions = getLegalActions(currentState, agentNumber);
+    if (0 === depth || 0 === legalActions.length) {
+        var score = evaluationFunction(currentState, thisAgent.mission);
+        return score;
+        // return evaluationFunction(currentState, thisAgent.mission)
+    }
+
+    var numOfAgent = currentState.playersAction.length;
+    var currentScores = [];
+
+    for (var i = 1; i < numOfAgent; i++) {
+        var nextAgentNum = (agentNumber+i) % numOfAgent;
+        for (var j = 0; j < legalActions.length; j++) {
+            var nextState = getNextState(currentState, 
+                legalActions[j].action, legalActions[j].tiki, nextAgentNum);
+            var score = minimax(thisAgent, nextState, depth, nextAgentNum);
+            currentScores.push(score);
+        }
+    }
+
+    if (agentNumber === thisAgent.agentNumber) {
+        return Math.max.apply(null, currentScores);
+    } else {
+        return Math.min.apply(null, currentScores);
+    }
+}
 
 function reflexMove() {
     var allNextState = [];
@@ -64,6 +133,24 @@ function reflexMove() {
         debugger;
     }
     tellJudge(this.agentNumber, allNextMovingTiki[maxIndex], operation);
+}
+
+function getLegalActions(currentState, agentNumber) {
+    var myActions = currentState.playersAction[agentNumber];
+    var availTiki = currentState.tikiOrder;
+
+    var nextMoves = [];
+    for (var i = 0; i < myActions.length; ++i) {
+        for (var j = 0; j < availTiki.length; ++j) {
+            if (1 === checkLegalAction(currentState, myActions[i], availTiki[j])) {
+                nextMoves.push({
+                    'tiki': availTiki[j],
+                    'action': myActions[i],
+                });
+            }
+        }
+    }
+    return nextMoves;
 }
 
 function checkLegalAction(targetState, action, tikiId)
@@ -118,7 +205,6 @@ function getNextState(currentState, action, tikiId, player)
     else if (action == 4) {
         updateStateWithKill(nextState , player , action);
     }
-   
     else {
         console.log('ERROR: invalid "player" passed to getNextState(), action:', action);
     }

@@ -30,7 +30,7 @@ Array.prototype.compare = function (array) {
     return true;
 }
 
-function copyState( stateToBeCopied,targetState)
+function copyState(stateToBeCopied, targetState)
 {
     for (var i = 0; i < targetState.playersAction.length; i++)
         stateToBeCopied.playersAction[i] = targetState.playersAction[i].slice(0);
@@ -41,21 +41,26 @@ function copyState( stateToBeCopied,targetState)
 function computeScore(tikiOrder, mission)
 {
     var score = 0;
-    for( var i = 0 ; i < mission.length ; i++) {
-      idx = getTikiIndex(tikiOrder, mission[i]);
-      if(idx <= i)
+    for (var i = 0; i < mission.length; i++) {
+        var idx = tikiOrder.indexOf(mission[i]);
+        if (-1 === idx) {
+            continue;
+        }
+        else if (idx <= i)
         {
             if (i == 0) score+=9;
             else if (i == 1) score+=5;
             else if (i == 2) score +=2;
         }
     }
-
     return score;
 }
 
 function getTikiIndex(tikiOrder, tikiId) 
 {
+    // console.log(tikiOrder, tikiId, tikiOrder.indexOf(tikiId));
+    // return tikiOrder.indexOf(tikiId);
+    
     var idx = 0;
     for(var i = 0 ; i < tikiOrder.length ; i++)
         if (tikiOrder[i] == tikiId)
