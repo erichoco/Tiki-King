@@ -1,52 +1,52 @@
 
 function Agent(agentName, agentNumber, mission) {
-	this.agentName = agentName;
+    this.agentName = agentName;
     this.agentNumber = agentNumber;
     this.mission = mission;
-	this.move = move;
-	function move() {
-		var allNextState = [];
-    	var allNextAction = [];
-    	var allNextMovingTiki = [];
-    	// get legal actions
-    	for(var i = 0 ; i < state.playersAction[this.agentNumber].length ; i++) {
-        	for(var j = 0 ; j < state.tikiOrder.length ; j++)
-        	{
-            	var illegal = checkLegalAction(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j]);
-            	if (illegal == 1) 
-            	    continue;
-            	var nextState = getNextState(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j], this.agentNumber);
-            	allNextState.push(nextState);
-            	allNextAction.push(i);
-            	allNextMovingTiki.push(j);
-        	}
-    	}
+    this.move = move;
+    function move() {
+        var allNextState = [];
+        var allNextAction = [];
+        var allNextMovingTiki = [];
+        // get legal actions
+        for(var i = 0 ; i < state.playersAction[this.agentNumber].length ; i++) {
+            for(var j = 0 ; j < state.tikiOrder.length ; j++)
+            {
+                var illegal = checkLegalAction(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j]);
+                if (illegal == 1) 
+                    continue;
+                var nextState = getNextState(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j], this.agentNumber);
+                allNextState.push(nextState);
+                allNextAction.push(i);
+                allNextMovingTiki.push(j);
+            }
+        }
 
-    	// Find best action
-    	var maxIndex = 0;
-    	var maxValue = -100000;
-    	for(var i = 0 ; i < allNextState.length ; i++)
-    	{
-        	var tmpValue = evaluationFunction(allNextState[i], this.mission);
-        	if(tmpValue > maxValue)
-        	{
-          		maxValue = tmpValue;
-           		maxIndex = i;
-        	}
-    	}
+        // Find best action
+        var maxIndex = 0;
+        var maxValue = -100000;
+        for(var i = 0 ; i < allNextState.length ; i++)
+        {
+            var tmpValue = evaluationFunction(allNextState[i], this.mission);
+            if(tmpValue > maxValue)
+            {
+                maxValue = tmpValue;
+                maxIndex = i;
+            }
+        }
 
-    	// Call game.js to update state with best action
-    	// console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
-    	var operation = state.playersAction[this.agentNumber][allNextAction[maxIndex]];
+        // Call game.js to update state with best action
+        // console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
+        var operation = state.playersAction[this.agentNumber][allNextAction[maxIndex]];
 
         if (operation === undefined || allNextMovingTiki[maxIndex] === undefined || maxIndex === undefined) {
-            console.log('operation:', operation);
-            console.log('allNextMovingTiki[maxIndex]:', allNextMovingTiki[maxIndex]);
-            console.log('maxIndex:', maxIndex);
+            // console.log('operation:', operation);
+            // console.log('allNextMovingTiki[maxIndex]:', allNextMovingTiki[maxIndex]);
+            // console.log('maxIndex:', maxIndex);
             debugger;
         }
-    	tellJudge(agentNumber, allNextMovingTiki[maxIndex], operation);
-	}
+        tellJudge(agentNumber, allNextMovingTiki[maxIndex], operation);
+    }
 }
 
 
@@ -85,8 +85,8 @@ function checkLegalAction(targetState, action, tikiId)
 
 function getNextState(currentState, action, tikiId, player)  
 {
-	var nextState = new State();
-	copyState(nextState, currentState);
+    var nextState = new State();
+    copyState(nextState, currentState);
 
     if (action == 0) {
         updateStateWithMoveup(1,tikiId , nextState , player , action);
@@ -125,4 +125,3 @@ function evaluationFunction(currentState, mission)
 
     return score*10 - distance;
 }
-

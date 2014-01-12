@@ -1,8 +1,6 @@
 /*Each Round of Game implement in here */
 /*Each round of game exists a judge to handle the game*/
 
-
-
 var state = new State();
 var playerScores = null;
 var playersNumber = null;
@@ -13,7 +11,6 @@ var UI_Mode = 0;  // 0 testMode ; 1 UI_mode
 
 // This is the 'class' of State
 function State() {
-
     this.playersAction = new Array();
     this.tikiOrder = new Array();
 }
@@ -24,25 +21,25 @@ function State() {
  */
 function setupGame(   pNumber , playerMissions )
 {
-   console.log("This is setupGame function!");
-   state = new State();
-   playerScores = null;
-   playersNumber = pNumber;
-   allMissions = new Array();
-   for(var i = 0 ; i < playersNumber ; i++)
-     allMissions[i] = playerMissions[i].slice(0);
+    // console.log("This is setupGame function!");
+    state = new State();
+    playerScores = null;
+    playersNumber = pNumber;
+    allMissions = new Array();
+    for(var i = 0 ; i < playersNumber ; i++)
+        allMissions[i] = playerMissions[i].slice(0);
 
 
-   initialAction = [0 , 0 , 1 , 2 , 3 , 4 ,4];
+    initialAction = [0 , 0 , 1 , 2 , 3 , 4 ,4];
 
-   state.playersAction = new Array();
-   for(var i = 0 ; i < playersNumber ; i++) {
-      state.playersAction[i] = initialAction.slice(0);
-   }
+    state.playersAction = new Array();
+    for(var i = 0 ; i < playersNumber ; i++) {
+        state.playersAction[i] = initialAction.slice(0);
+    }
 
-   initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-   state.tikiOrder = initialTikiOrder.slice(0);
-   gameEnd = 0;
+    initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    state.tikiOrder = initialTikiOrder.slice(0);
+    gameEnd = 0;
 
 }
 /*
@@ -50,9 +47,7 @@ function setupGame(   pNumber , playerMissions )
  */
 function getState()
 {
-
-    return state ;
-
+    return state;
 }
 
 
@@ -68,9 +63,9 @@ function getState()
  //problem: What should be the input ? tikiID or tikiIdx?
 function tellJudge(playerID , tikiIdx , action)
 {
-    console.log("This is tellJudge function")
+    // console.log("This is tellJudge function")
     if (action == undefined) {
-        console.log("Undefined action:", action);
+        // console.log("Undefined action:", action);
         debugger;
     }
     updateState(action , tikiIdx , playerID)
@@ -84,7 +79,7 @@ function tellJudge(playerID , tikiIdx , action)
  */
 function checkGameEnd()
 {
-    console.log("This is checkGameEnd function")
+    // console.log("This is checkGameEnd function")
     
     var flagOrder = 0;
     if (state.tikiOrder.length <= 3) {
@@ -97,7 +92,7 @@ function checkGameEnd()
         }
     }
     if (flag || flagOrder) {
-        console.log('GAME END');
+        // console.log('GAME END');
         playerScores = new Array();
         for(var  i = 0 ; i < playersNumber ; i++)         
             playerScores[i] = computeScore(state.tikiOrder, allMissions[i]);
@@ -111,12 +106,11 @@ function checkGameEnd()
  */
 function askJudge()
 {
-    console.log("This is askJudge function")
+    // console.log("This is askJudge function")
 
 
     if(gameEnd == 0) 
         return null;
-    
     else {
         return playerScores;
     }
@@ -142,43 +136,40 @@ function computeResult( winner  , comScore) {
 
 // The following functions are related to update state
 function updateState(action, tikiIdx, player) {
-    console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
-    console.log('Current Order:', state.tikiOrder);
+    // console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
+    // console.log('Current Order:', state.tikiOrder);
     var tikiId = state.tikiOrder[tikiIdx]
- 
 
     if (action == 0) {
         updateStateWithMoveup(1,tikiId , state , player , action);
         if(UI_Mode == 1)
-          moveUp(tikiIdx, 1);
+            moveUp(tikiIdx, 1);
     }
     else if (action == 1) {
         updateStateWithMoveup(2,tikiId, state , player , action);
         if(UI_Mode == 1)
-          moveUp(tikiIdx, 2);
+            moveUp(tikiIdx, 2);
     }
     else if (action == 2) {
         updateStateWithMoveup(3,tikiId, state , player , action);
         if(UI_Mode == 1)
-          moveUp(tikiIdx, 3);
+            moveUp(tikiIdx, 3);
     }
     else if (action == 3) {
         updateStateWithPush(tikiId, state , player , action);
         if(UI_Mode == 1)
-          moveToBottom(tikiIdx);
+            moveToBottom(tikiIdx);
     }
     else if (action == 4) {
         updateStateWithKill(state , player , action);
         if(UI_Mode == 1)
-          killLast();
+            killLast();
     }
-   
     else {
         console.log('ERROR: invalid "player" passed to updateState(), action:', action);
     }
 
-    console.log('Current Order after update:', state.tikiOrder)
-    
+    //console.log('Current Order after update:', state.tikiOrder)
 }
 
 
@@ -231,5 +222,3 @@ function updateStateWithKill(targetState , playerID , actionID)
     targetState.playersAction[playerID].splice(beRemovedActionIndex , 1);
 
 }
-
-

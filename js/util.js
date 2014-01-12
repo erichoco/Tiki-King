@@ -64,3 +64,33 @@ function getTikiIndex(tikiOrder, tikiId)
                 return idx;
             }
 }
+
+function createPKMissions(agentNum) {
+    var missionsLi = [];
+    var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+
+    for (var i = 0; i < agentNum; ++i) {
+        var singleMission = [];
+        var randIdx = shuffle([0, 1, 2]);
+        for (var j = 0; j < 3; ++j) {
+            singleMission.push(
+                naiveOrder[randIdx[j]][Math.floor(Math.random()*3)]
+            );
+        }
+
+        var dup_flag = false;
+        for (var j = 0; j < missionsLi.length; ++j) {
+            if (singleMission.compare(missionsLi[j])) {
+                dup_flag = true;
+                break;
+            }
+        }
+        if (dup_flag) {
+            --i;
+        } else {
+            missionsLi.push(singleMission);
+        }
+    }
+
+    return missionsLi;
+}

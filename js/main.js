@@ -48,10 +48,6 @@ function agentPk() {
     AllMissions = missions; // Set up global var in game.js
 
     setupGame(agentNames.length, missions.slice(0));
-    var tmv = new State();
-    copyState(tmv, state);
-    console.log('tmv:', tmv);
-    console.log('state:', tmv);
 
     // Create Agents
     var agents = new Array();
@@ -63,7 +59,6 @@ function agentPk() {
     // PK!!!
     var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
-        console.log('New iteration,', i);
         setupGame(agentNames.length, missions.slice(0));
         while(1) {
             var endingResult;
@@ -75,41 +70,13 @@ function agentPk() {
                 }
             }
             if (null !== endingResult) {
-                displayResult(resultArea, endingResult, i);
+                console.log('#', i+1, 'agent0:', endingResult[0], 'agent1', endingResult[1]);
+                
+                //displayResult(resultArea, endingResult, i);
                 break;
             }
         }
     }
-}
-
-function createPKMissions(agentNum) {
-    var missionsLi = [];
-    var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
-
-    for (var i = 0; i < agentNum; ++i) {
-        var singleMission = [];
-        var randIdx = shuffle([0, 1, 2]);
-        for (var j = 0; j < 3; ++j) {
-            singleMission.push(
-                naiveOrder[randIdx[j]][Math.floor(Math.random()*3)]
-            );
-        }
-
-        var dup_flag = false;
-        for (var j = 0; j < missionsLi.length; ++j) {
-            if (singleMission.compare(missionsLi[j])) {
-                dup_flag = true;
-                break;
-            }
-        }
-        if (dup_flag) {
-            --i;
-        } else {
-            missionsLi.push(singleMission);
-        }
-    }
-
-    return missionsLi;
 }
 
 function displayResult(area, results, iter) {
@@ -140,7 +107,15 @@ function setupTest() {
         UI_Mode = ~~(activeTab == 'graphic');
     });
 
-    $('#go-btn').on('click', agentPk);
+    var $configDiv = $('#config-div');
+    var $goBtn = $configDiv.find('#go-btn');
+    $goBtn.on('click', agentPk);
+    $configDiv.find('input').on('keyup', function(e) {
+        if (13 === e.keyCode) {
+            $goBtn.click();
+        }
+    });
+
 }
 
 // Initialize parameters in main.js
@@ -198,7 +173,7 @@ function createCards() {
 
 function setupOthers() {
     var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
-    console.log(comMissionBoard);
+    //console.log(comMissionBoard);
     $('#replay').click(resetGame);
     $('#replay').next().change(function() {
         comMissionBoard.fadeToggle();
