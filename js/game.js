@@ -68,8 +68,8 @@ function tellJudge(playerID , tikiIdx , action)
         // console.log("Undefined action:", action);
         debugger;
     }
-    updateState(action , tikiIdx , playerID)
-    checkGameEnd()
+    updateState(action , tikiIdx , playerID);
+    checkGameEnd();
 }
 
 

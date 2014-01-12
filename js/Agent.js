@@ -31,7 +31,7 @@ function minimaxMove() {
     var nextStates = [];
     for (var i = 0; i < myActions.length; ++i) {
         for (var j = 0; j < availTiki.length; ++j) {
-            if (0 === checkLegalAction(state, myActions[i], availTiki[j])) {
+            if (!checkLegalAction(state, myActions[i], availTiki[j])) {
                 nextMoves.push({
                     'tiki': availTiki[j],
                     'action': myActions[i],
@@ -42,14 +42,15 @@ function minimaxMove() {
             }
         }
     }
-    if (0 === nextStates.length) {
+    /*if (0 === nextStates.length) {
         console.log('state len 0:', myActions, availTiki);
-    }
+    }*/
 
-    var depth = 1; // default minimax depth
+    var depth = 2; // default minimax depth
     var scores = [];
     for (var i = 0; i < nextStates.length; i++) {
-        scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber));
+        scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber, 
+            -Number.MAX_VALUE, Number.MAX_VALUE));
     };
     var bestScore = Math.max.apply(null, scores);
 
@@ -59,13 +60,13 @@ function minimaxMove() {
 }
 
 // thisAgent is the original agent calling move function
-function minimax(thisAgent, currentState, depth, agentNumber) {
+function minimax(thisAgent, currentState, depth, agentNumber, alpha, beta) {
     if (agentNumber === thisAgent.agentNumber) {
         depth--;
     }
     var legalActions = getLegalActions(currentState, agentNumber);
     //console.log(legalActions.length);
-    if (0 === depth || 0 === legalActions.length) {
+    if (!depth || !legalActions.length) {
         var score = evaluationFunction(currentState, thisAgent.mission);
         //console.log(score);
         return score;
@@ -77,10 +78,23 @@ function minimax(thisAgent, currentState, depth, agentNumber) {
 
     var nextAgentNum = (agentNumber+1) % numOfAgent;
     for (var j = 0; j < legalActions.length; j++) {
-        var nextState = getNextState(currentState, 
+        if (alpha >= beta) {
+            break;
+        }
+        var nextState = getNextState(currentState,
             legalActions[j].action, legalActions[j].tiki, nextAgentNum);
-        var score = minimax(thisAgent, nextState, depth, nextAgentNum);
+        var score = minimax(thisAgent, nextState, depth, nextAgentNum, alpha, beta);
         currentScores.push(score);
+
+        if (agentNumber === thisAgent.agentNumber) {
+            if (score > alpha) {
+                alpha = score;
+            }
+        } else {
+            if (score < beta) {
+                beta = score;
+            }
+        }
     }
 
     if (agentNumber === thisAgent.agentNumber) {
