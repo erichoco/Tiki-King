@@ -31,6 +31,30 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
                 alert('haha');
     }
 };
+/*
+Agent.prototype.setEval = function(evalName) {
+    switch(evalName) {
+            case 'eval1':
+                this.move = reflexMove;
+                break;
+            case 'minimax1':
+                this.depth = 1;
+                this.move = minimaxMove;
+                break;
+            case 'minimax2':
+                this.depth = 2;
+                this.move = minimaxMove;
+                break;
+            case 'minimax3':
+                this.depth = 3;
+                this.move = minimaxMove;
+                break;
+            default:
+                console.log(agent);
+                alert('haha');
+    }
+};*/
+
 
 function minimaxMove() {
     var myActions = state.playersAction[this.agentNumber];
@@ -109,7 +133,11 @@ function minimax(thisAgent, currentState, depth, agentNumber, alpha, beta) {
     if (agentNumber === thisAgent.agentNumber) {
         return Math.max.apply(null, currentScores);
     } else {
-        return Math.min.apply(null, currentScores);
+        var sum = 0;
+        for (var i = 0; i < currentScores.length; i++) {
+            sum += currentScores[i];
+        }
+        return Math.min.apply(null, sum/currentScores.length);
     }
 }
 
@@ -248,3 +276,4 @@ function evaluationFunction(currentState, mission)
 
     return score*10 - distance;
 }
+

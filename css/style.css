@@ -134,6 +134,47 @@ body {
   margin: 10px auto;
   padding: 5px;
   border: 1px solid #888888;
-  background-color: #ffffff; }
+  background-color: #ffffff;
+  display: block; }
   #result-area span {
     margin: 10px 30px; }
+  #result-area #result-wrapper {
+    margin: 10px auto;
+    width: 60%;
+    overflow-x: scroll;
+    background-color: #ebebeb;
+    border-radius: 5px; }
+  #result-area ul {
+    padding: 0;
+    width: 0px;
+    list-style: none; }
+    #result-area ul li {
+      width: 130px;
+      float: left; }
+      #result-area ul li div {
+        margin: 5px 50px;
+        height: 40px;
+        float: none;
+        border: 1px solid #888888;
+        border-radius: 5px;
+        color: #FFFFFF;
+        font: 1.8em Arial, sans-serif;
+        font-weight: bold;
+        text-align: center; }
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0; }
+
+.clearfix {
+  display: inline-block; }
+
+html[xmlns] .clearfix {
+  display: block; }
+
+* html .clearfix {
+  height: 1%; }

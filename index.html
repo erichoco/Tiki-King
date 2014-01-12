@@ -19,8 +19,15 @@
                 <option value="minimax2">Minimax 2</option>
                 <option value="minimax3">Minimax 3</option>
             </select>
+            <select name="agent">
+                <option value="none">None</option>
+                <option value="simple">Simple</option>
+                <option value="minimax1">Minimax 1</option>
+                <option value="minimax2">Minimax 2</option>
+                <option value="minimax3">Minimax 3</option>
+            </select>
             <!--<button id="apply-btn">Apply!</button>-->
-            <input type="checkbox" checked="true">Show CP Mission</input>
+            <input type="checkbox" checked="true">Show CP Mission
             <button id="replay" type="button">Replay</button>
         </div>
         <div id="game-pad">
@@ -57,42 +64,51 @@
         <div id="test-wrapper">
             <h2>Test Page</h2>
             <div id="config-div">
-                <span>Agent&nbsp;1:&nbsp;</span>
-                <select name="agent1">
+                <span>Agent 1:&nbsp;</span>
+                <select name="agent">
                     <option value="simple" selected="selected">Simple</option>
                     <option value="minimax1">Minimax 1</option>
                     <option value="minimax2">Minimax 2</option>
                     <option value="minimax3">Minimax 3</option>
                 </select>
-                <span>Agent&nbsp;2:&nbsp;</span>
-                <select name="agent2">
+                <span>Agent 2:&nbsp;</span>
+                <select name="agent">
                     <option value="simple" selected="selected">Simple</option>
                     <option value="minimax1">Minimax 1</option>
                     <option value="minimax2">Minimax 2</option>
                     <option value="minimax3">Minimax 3</option>
                 </select>
-                <span>Agent&nbsp;3:&nbsp;</span>
-                <select name="agent3">
+                </br>
+                <span>Agent 3:&nbsp;</span>
+                <select name="agent">
                     <option value="none" selected="selected">None</option>
                     <option value="simple">Simple</option>
                     <option value="minimax1">Minimax 1</option>
                     <option value="minimax2">Minimax 2</option>
                     <option value="minimax3">Minimax 3</option>
                 </select>
-                <span>Agent&nbsp;4:&nbsp;</span>
-                <select name="agent4">
+                <span>Agent 4:&nbsp;</span>
+                <select name="agent">
                     <option value="none" selected="selected">None</option>
                     <option value="simple">Simple</option>
                     <option value="minimax1">Minimax 1</option>
                     <option value="minimax2">Minimax 2</option>
                     <option value="minimax3">Minimax 3</option>
+                </select>
+                <select name="eval">
+                    <option value="eval1" selected="selected">Eval 1</option>
+                    <option value="eval2" selected="selected">Eval 2</option>
                 </select>
                 <span>Iterations:&nbsp;</span>
                 <input type="text" name="iteratons" size="5" value="10">
                 <button id="go-btn2">Go!</button>
+                <input type="checkbox">Show Step
             </div>
             <div id="result-area">
-                
+                <div id="result-wrapper">
+                    <ul class="clearfix">
+                    </ul>
+                </div>
             </div>
         </div>
         <!--<img style="width:50%; margin:50px 10px;" src="img/const.jpg">-->

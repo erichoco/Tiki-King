@@ -66,7 +66,9 @@ function resetGame() {
 
     setupGame(2, graMissions, tikiOrder);
     graAgent = new Agent();
-    graAgent.init($('#setting').find('select')[0].value, 1, graMissions[1]);
+    var $setting = $('#setting');
+    graAgent.init($setting.find('select[name=agent]')[0].value, 1, graMissions[1]);
+    //graAgent.setEval($setting.find('select[name=eval]')[0].value);
 
     createTikis(tikiOrder);
     setupCards();
@@ -95,20 +97,20 @@ function createCards() {
 function setupOthers() {
     var comMissionBoard = $('#mission-wrapper div:nth-child(2)');
     //console.log(comMissionBoard);
-    $('#replay').click(resetGame);
-    $('#setting input').change(function() {
+
+    var $setting = $('#setting');
+
+    $setting.find('input').change(function() {
         comMissionBoard.fadeToggle();
     });
-    $('#setting').find('select').on('change', function() {
+    $setting.find('select[name=agent]').on('change', function() {
         graAgent = new Agent();
         graAgent.init(this.value, 1, graMissions[1]);
     });
-    /*$('#apply-btn').click(function() {
-        var agentName = $('#setting').find('select').value;
-        graAgent = new Agent();
-        graAgent.init(agentName, 2, graMissions[1]);
-        setupGame(2, graMissions);
-    });*/
+    $setting.find('select[name=eval]').on('change', function() {
+        graAgent.setEval(this.value);
+    });
+    $setting.find('#replay').click(resetGame);
 }
 
 function displayMissions(missions) {
@@ -348,14 +350,16 @@ function handleEnd() {
 
 function agentPk() {
     var configDiv = $('#test-wrapper #config-div');
-    var iter = configDiv.find('input')[0].value;
+    var inputEl = configDiv.children('input');
+    var iter = inputEl.first()[0].value;
+    var showStep = inputEl.last()[0].checked;
     if (isNaN(iter)) {
         alert('Iterations value invalid.');
-        configDiv.find('input')[0].value = '';
+        inputEl.first()[0].value = '';
         return;
     }
 
-    var agentOptions = configDiv.find('select');
+    var agentOptions = configDiv.find('select[name=agent]');
     var agentNames = [];
     for (var i = 0; i < agentOptions.length; ++i) {
         if ('none' != agentOptions[i].value) {
@@ -364,7 +368,7 @@ function agentPk() {
     }
 
     var results = [];
-    var resultArea = $('#result-area').html('');
+    //var resultArea = $('#result-area').html('');
     for (var i = 0; i < iter; ++i) {
         var missions = createPKMissions(agentNames.length);
         allMissions = missions; // Set up global var in game.js
@@ -378,9 +382,19 @@ function agentPk() {
 
         // PK!!!
         setupGame(agentNames.length, missions.slice(), createTikiOrder());
+
+        /*if (showStep) {
+            $('body').on('keyup', function(e) {
+                e.preventDefault();
+            })
+
+        } else {*/
         while(1) {
             var endingResult;
             for (var j = 0; j < agents.length; j++) {
+                if (showStep) {
+                    plotTikiOrder();
+                }
                 agents[j].move();
                 endingResult = askJudge();
                 if (null !== endingResult) {
@@ -394,6 +408,7 @@ function agentPk() {
                 break;
             }
         }
+        //}
     }
 }
 
@@ -431,8 +446,10 @@ function setupTest() {
         pagedivs.removeClass('hide').addClass('hide');
         $('#'+activeTab).removeClass('hide');
 
-        UI_Mode = ~~(activeTab == 'graphic');
+        UI_Mode = ~~(activeTab === 'graphic');
     });
+
+
 
     var $configDiv = $('#config-div');
     var $goBtn = $configDiv.find('#go-btn2');
@@ -443,6 +460,27 @@ function setupTest() {
         }
     });
 
+}
+
+function plotTikiOrder() {
+    var curState = getState();
+    var curOrder = curState.tikiOrder;
+    var $orderList = $('#result-area ul');
+
+    var ulWidth = $orderList.width();
+    $orderList.width((parseInt(ulWidth)+130) + 'px');
+
+    var divEl = '';
+    for (var i = 0; i < curOrder.length; i++) {
+        divEl += '<div>' + curOrder[i] + '</div>\n';
+    }
+
+    $orderList.append('<li>' + divEl + '</li>');//.html(curOrder);
+    var testTikis = $orderList.children('li').last().find('div');
+    for (var i = 0; i < testTikis.length; i++) {
+        $(testTikis[i]).css('background-color',
+            tikiColor[curOrder[i]]);
+    };
 }
 
 
