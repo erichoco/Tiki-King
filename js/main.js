@@ -14,8 +14,8 @@ var selectMark;
 
 var upCardRemain, killCardRemain;
 
-var graAgent; // Agent in graphic mode
-var graMissions;
+var graAgent = []; // Agent in graphic mode
+var graMissions = [];
 
 $(document).ready(function() {
     //initParams();
@@ -61,13 +61,25 @@ function resetGame() {
     initParams();
 
     var tikiOrder = createTikiOrder();
-    graMissions = createPKMissions(2);
+    var $setting = $('#setting');
+    var agentOptions = $setting.find('select[name=agent]');
+    var agentNames = [];
+    for (var i = 0; i < agentOptions.length; ++i) {
+        if ('none' != agentOptions[i].value) {
+            agentNames.push(agentOptions[i].value);
+        }
+    }
+    graMissions = createPKMissions(agentNames.length+1);
     displayMissions(graMissions);
 
-    setupGame(2, graMissions, tikiOrder);
-    graAgent = new Agent();
-    var $setting = $('#setting');
-    graAgent.init($setting.find('select[name=agent]')[0].value, 1, graMissions[1]);
+    setupGame(agentNames.length+1, graMissions, tikiOrder);
+    for (var i = 0; i < agentNames.length; i++) {
+        var agent = new Agent();
+        agent.init(agentNames[i], i+1, graMissions[i+1];
+        graAgent.push(agent);
+    };
+    //graAgent = new Agent();
+    //graAgent.init($setting.find('select[name=agent]')[0].value, 1, graMissions[1]);
     //graAgent.setEval($setting.find('select[name=eval]')[0].value);
 
     createTikis(tikiOrder);
@@ -104,8 +116,9 @@ function setupOthers() {
         comMissionBoard.fadeToggle();
     });
     $setting.find('select[name=agent]').on('change', function() {
-        graAgent = new Agent();
-        graAgent.init(this.value, 1, graMissions[1]);
+        var idx = $setting.children(select).index($(this))+1;
+        graAgent[idx] = new Agent();
+        graAgent[idx].init(this.value, idx, graMissions[idx]);
     });
     $setting.find('select[name=eval]').on('change', function() {
         graAgent.setEval(this.value);
@@ -229,10 +242,13 @@ function setupCards() {
 
         if (handleEnd()) return;
 
-        setTimeout(function() {
-            graAgent.move();
-            handleEnd();
-        }, 1000);
+        for (var i = 0; i < graAgent.length; i++) {
+            setTimeout(function () {
+                graAgent[i].move();
+                if (handleEnd()) break;
+            }, 1000);
+        }
+        
     });
     cards.eq(1).text('Up 2').on('click', function() {
         if (!hasSelected) return;
@@ -252,11 +268,18 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
-
+        for (var i = 0; i < graAgent.length; i++) {
+            setTimeout(function () {
+                graAgent[i].move();
+                if (handleEnd()) break;
+            }, 1000);
+        }
+ 
+/*
         setTimeout(function() {
             graAgent.move();
             handleEnd();
-        }, 1000);
+        }, 1000);*/
     });
     cards.eq(2).text('Up 3').on('click', function() {
         if (!hasSelected) return;
@@ -276,11 +299,17 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
-
+        for (var i = 0; i < graAgent.length; i++) {
+            setTimeout(function () {
+                graAgent[i].move();
+                if (handleEnd()) break;
+            }, 1000);
+        }
+/*
         setTimeout(function() {
             graAgent.move();
             handleEnd();
-        }, 1000);
+        }, 1000);*/
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -298,11 +327,17 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
-
+        for (var i = 0; i < graAgent.length; i++) {
+            setTimeout(function () {
+                graAgent[i].move();
+                if (handleEnd()) break;
+            }, 1000);
+        }
+/*
         setTimeout(function() {
             graAgent.move();
             handleEnd();
-        }, 1000);
+        }, 1000);*/
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
@@ -322,10 +357,17 @@ function setupCards() {
 
         if (handleEnd()) return;
 
-        setTimeout(function() {
+        for (var i = 0; i < graAgent.length; i++) {
+            setTimeout(function () {
+                graAgent[i].move();
+                if (handleEnd()) break;
+            }, 1000);
+        }
+        
+        /*setTimeout(function() {
             graAgent.move();
             handleEnd();
-        }, 1000);
+        }, 1000);*/
     });
 }
 
