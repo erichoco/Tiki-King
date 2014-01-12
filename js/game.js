@@ -13,6 +13,8 @@ var UI_Mode = 1;  // 0 testMode ; 1 UI_mode
 function State() {
     this.playersAction = new Array();
     this.tikiOrder = new Array();
+    this.record = new Array();
+    this.round = 0;
 }
 
 
@@ -35,11 +37,14 @@ function setupGame(pNumber, playerMissions, tikiOrder)
     state.playersAction = new Array();
     for(var i = 0 ; i < playersNumber ; i++) {
         state.playersAction[i] = initialAction.slice(0);
+        state.record[i] = [];
+        state.record[i][0] = -1;
     }
 
     //initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     state.tikiOrder = tikiOrder;//initialTikiOrder.slice(0);
     gameEnd = 0;
+
 
 }
 /*
@@ -139,16 +144,19 @@ function updateState(action, tikiIdx, player) {
 
     if (action == 0) {
         updateStateWithMoveup(1,tikiId , state , player , action);
+        state.record[player][state.round] = tikiId;
         if(UI_Mode && player)
             moveUp(tikiIdx, 1);
     }
     else if (action == 1) {
         updateStateWithMoveup(2,tikiId, state , player , action);
+        state.record[player][state.round] = tikiId;
         if(UI_Mode && player)
             moveUp(tikiIdx, 2);
     }
     else if (action == 2) {
         updateStateWithMoveup(3,tikiId, state , player , action);
+        state.record[player][state.round] = tikiId;
         if(UI_Mode && player)
             moveUp(tikiIdx, 3);
     }
@@ -168,6 +176,9 @@ function updateState(action, tikiIdx, player) {
         console.log('ERROR: invalid "action" passed to updateState(), action:', action);
     }
 
+    // Record agent's movement
+    
+
     //console.log('Current Order after update:', state.tikiOrder)
 }
 
@@ -179,7 +190,9 @@ function updateStateWithMoveup(moveup , tikiId , targetState , playerID , action
     var tmp = tikiId
     var moveTime = 0
     var tikiIndex = getTikiIndex(targetState.tikiOrder, tikiId)
-
+    if (tikiIndex<0) {
+        debugger;
+    }
     while(moveTime<moveup){
         var index = tikiIndex - moveTime
         targetState.tikiOrder[index] = targetState.tikiOrder[index-1]
@@ -196,7 +209,9 @@ function updateStateWithPush(tikiId , targetState , playerID , actionID)
 
     var tikiIndex = getTikiIndex(targetState.tikiOrder, tikiId);
     var index = tikiIndex;
-
+    if (tikiIndex<0) {
+        debugger;
+    }
 
     while(index<targetState.tikiOrder.length-1){
         targetState.tikiOrder[index] = targetState.tikiOrder[index+1];

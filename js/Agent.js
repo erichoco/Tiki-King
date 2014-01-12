@@ -12,6 +12,11 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
     this.mission = mission;
     switch(agentName) {
             case 'simple':
+                this.eval = 1;
+                this.move = reflexMove;
+                break;
+            case 'simple2':
+                this.eval = 2;
                 this.move = reflexMove;
                 break;
             case 'minimax1':
@@ -136,7 +141,15 @@ function reflexMove() {
     var maxValue = -100000;
     for(var i = 0 ; i < allNextState.length ; i++)
     {
-        var tmpValue = evaluationFunction(allNextState[i], this.mission);
+        var tmpValue = 0;
+        if (this.eval == 1)
+            tmpValue = evaluationFunction(allNextState[i], this.mission);
+        else if (this.eval == 2)
+            tmpValue = evalEvalFunc(allNextState[i], this.mission, this.agentNumber);
+        else {
+            console.log('WRONG eval!!!');
+            debugger;
+        }
         if(tmpValue > maxValue)
         {
             maxValue = tmpValue;
@@ -181,7 +194,7 @@ function checkLegalAction(targetState, action, tikiId)
     var illegal = 0;
     if(action == 0)
     {
-        if(index == 0)
+        if(index <= 0)
             illegal = 1;
     }
     else if(action ==1)
@@ -196,7 +209,7 @@ function checkLegalAction(targetState, action, tikiId)
     }
     else if(action == 3)
     {
-        if (index >= targetState.tikiOrder.length-1)
+        if (index >= targetState.tikiOrder.length-1 || index < 0)
             illegal = 1;
     }
 
@@ -243,8 +256,26 @@ function evaluationFunction(currentState, mission)
         idx = getTikiIndex(currentState.tikiOrder, mission[i]);
         if(idx > i) {
             distance += Math.abs(idx-i);
+        } else if (idx == -1) {
+            distance += 10;
         }
     }
 
     return score*10 - distance;
+}
+
+function evalEvalFunc(currentState, mission, playerID)
+{
+    var myValue = evaluationFunction(currentState, mission);
+    var othersValue = 0;
+    for (var i = 0; i < state.round; i++) {
+        for (var j = 0; j < playersNumber; j++) {
+            if (j != playerID) {
+                if (currentState.record[j][i] != -1) {
+                    othersValue += (10-i)*guessTikiScore(currentState.tikiOrder, currentState.record[j][i])/5;
+                }
+            }
+        } 
+    }
+    return (myValue - othersValue);
 }

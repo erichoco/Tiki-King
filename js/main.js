@@ -365,6 +365,7 @@ function agentPk() {
 
     var results = [];
     var resultArea = $('#result-area').html('');
+    var win = [0, 0, 0, 0];
     for (var i = 0; i < iter; ++i) {
         var missions = createPKMissions(agentNames.length);
         allMissions = missions; // Set up global var in game.js
@@ -387,13 +388,28 @@ function agentPk() {
                     break;
                 }
             }
+            
             if (null !== endingResult) {
                 showResult(i, endingResult);
                 results.push(endingResult);
+                var ind = endingResult.indexOf(Math.max.apply(Math, endingResult));
+                for (var k=0; k<endingResult.length; k++) {
+                    if (endingResult[k]==endingResult[ind])
+                        win[k]++;
+                }
+                
                 //displayResult(resultArea, endingResult, i);
                 break;
             }
+            state.round++;
+            for (var k = 0; k < playersNumber; k++) {
+                state.record[k][state.round] = -1;
+            }
+            
         }
+    }
+    for (var n = 0; n < win.length; n++) {
+        console.log('A', (n+1), 'win:', win[n]);
     }
 }
 

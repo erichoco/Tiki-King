@@ -32,9 +32,12 @@ Array.prototype.compare = function (array) {
 
 function copyState(stateToBeCopied, targetState)
 {
-    for (var i = 0; i < targetState.playersAction.length; i++)
+    for (var i = 0; i < targetState.playersAction.length; i++) {
         stateToBeCopied.playersAction[i] = targetState.playersAction[i].slice(0);
+        stateToBeCopied.record[i] = targetState.record[i].slice(0);
+    }
     stateToBeCopied.tikiOrder = targetState.tikiOrder.slice(0);
+    stateToBeCopied.round = targetState.round;
     // stateToBeCopied = jQuery.extend(true, {}, targetState);
 }
 
@@ -53,6 +56,16 @@ function computeScore(tikiOrder, mission)
             else if (i == 2) score +=2;
         }
     }
+    return score;
+}
+
+function guessTikiScore(tikiOrder, tiki)
+{
+    var idx = tikiOrder.indexOf(tiki);
+    var score = 0;
+    if (idx == 0) score = 9;
+    else if (idx == 1) score = 5;
+    else if (idx == 2) score = 2;
     return score;
 }
 
