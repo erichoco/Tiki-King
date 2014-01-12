@@ -1,58 +1,73 @@
 
-function Agent(agentName, agentNumber, mission) {
+function Agent() {
+    this.agentName = '';
+    this.agentNumber = 0;
+    this.mission = [];
+    this.move;
+}
+
+Agent.prototype.init = function(agentName, agentNumber, mission) {
+    console.log(agentName);
     this.agentName = agentName;
     this.agentNumber = agentNumber;
     this.mission = mission;
-    this.move = move;
-    function move() {
-        var allNextState = [];
-        var allNextAction = [];
-        var allNextMovingTiki = [];
-        // get legal actions
-        for(var i = 0 ; i < state.playersAction[this.agentNumber].length ; i++) {
-            for(var j = 0 ; j < state.tikiOrder.length ; j++)
-            {
-                var illegal = checkLegalAction(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j]);
-                if (illegal == 1) 
-                    continue;
-                var nextState = getNextState(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j], this.agentNumber);
-                allNextState.push(nextState);
-                allNextAction.push(i);
-                allNextMovingTiki.push(j);
-            }
-        }
-
-        // Find best action
-        var maxIndex = 0;
-        var maxValue = -100000;
-        for(var i = 0 ; i < allNextState.length ; i++)
-        {
-            var tmpValue = evaluationFunction(allNextState[i], this.mission);
-            if(tmpValue > maxValue)
-            {
-                maxValue = tmpValue;
-                maxIndex = i;
-            }
-        }
-
-        // Call game.js to update state with best action
-        // console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
-        var operation = state.playersAction[this.agentNumber][allNextAction[maxIndex]];
-
-        if (operation === undefined || allNextMovingTiki[maxIndex] === undefined || maxIndex === undefined) {
-            // console.log('operation:', operation);
-            // console.log('allNextMovingTiki[maxIndex]:', allNextMovingTiki[maxIndex]);
-            // console.log('maxIndex:', maxIndex);
-            debugger;
-        }
-        tellJudge(agentNumber, allNextMovingTiki[maxIndex], operation);
+    switch(agentName) {
+            case 'simple':
+                this.move = reflexMove;
+                break;
+            default:
+                alert('haha');
+                this.move = reflexMove;
+                break;
     }
-}
+};
 
+function reflexMove() {
+    var allNextState = [];
+    var allNextAction = [];
+    var allNextMovingTiki = [];
+    // get legal actions
+    for(var i = 0 ; i < state.playersAction[this.agentNumber].length ; i++) {
+        for(var j = 0 ; j < state.tikiOrder.length ; j++)
+        {
+            var illegal = checkLegalAction(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j]);
+            if (illegal == 1) 
+                continue;
+            var nextState = getNextState(state, state.playersAction[this.agentNumber][i] , state.tikiOrder[j], this.agentNumber);
+            allNextState.push(nextState);
+            allNextAction.push(i);
+            allNextMovingTiki.push(j);
+        }
+    }
+
+    // Find best action
+    var maxIndex = 0;
+    var maxValue = -100000;
+    for(var i = 0 ; i < allNextState.length ; i++)
+    {
+        var tmpValue = evaluationFunction(allNextState[i], this.mission);
+        if(tmpValue > maxValue)
+        {
+            maxValue = tmpValue;
+            maxIndex = i;
+        }
+    }
+
+    // Call game.js to update state with best action
+    // console.log("AI do operation " , state.comActions[allNextAction[maxIndex]] , " on tiki " , state.tikiOrder[allNextMovingTiki[maxIndex]]);
+    var operation = state.playersAction[this.agentNumber][allNextAction[maxIndex]];
+
+    if (operation === undefined || allNextMovingTiki[maxIndex] === undefined || maxIndex === undefined) {
+        // console.log('operation:', operation);
+        // console.log('allNextMovingTiki[maxIndex]:', allNextMovingTiki[maxIndex]);
+        // console.log('maxIndex:', maxIndex);
+        debugger;
+    }
+    tellJudge(this.agentNumber, allNextMovingTiki[maxIndex], operation);
+}
 
 function checkLegalAction(targetState, action, tikiId)
 {
-
     var index = getTikiIndex(targetState.tikiOrder, tikiId);
     var illegal = 0;
     if(action == 0)

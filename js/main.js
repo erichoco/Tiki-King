@@ -38,12 +38,14 @@ function agentPk() {
     }
 
     var agentOptions = configDiv.find('select');
+    console.log(agentOptions);
     var agentNames = [];
     for (var i = 0; i < agentOptions.length; ++i) {
         if ('none' != agentOptions[i].value) {
             agentNames.push(agentOptions[i].value);
         }
     }
+    console.log(agentNames);
     var missions = createPKMissions(agentNames.length);
     AllMissions = missions; // Set up global var in game.js
 
@@ -52,8 +54,9 @@ function agentPk() {
     // Create Agents
     var agents = new Array();
     for (var i = 0; i < agentNames.length; ++i) {
-        agents[i] = new Agent(agentNames[i].value, i);
-        agents[i].mission = missions[i];
+        agents[i] = new Agent();
+        agents[i].init(agentNames[i], i, missions[i]);
+        // agents[i].mission = missions[i];
     }
 
     // PK!!!
@@ -71,7 +74,7 @@ function agentPk() {
             }
             if (null !== endingResult) {
                 console.log('#', i+1, 'agent0:', endingResult[0], 'agent1', endingResult[1]);
-                
+
                 //displayResult(resultArea, endingResult, i);
                 break;
             }
