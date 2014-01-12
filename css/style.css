@@ -48,7 +48,7 @@ body {
 #setting {
   margin: 20px 4% 0 4%;
   width: 90%; }
-  #setting button {
+  #setting #replay {
     float: right; }
 
 #game-pad {

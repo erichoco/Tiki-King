@@ -14,13 +14,16 @@ var selectMark;
 
 var upCardRemain, killCardRemain;
 
+var graAgent; // Agent in graphic mode
+var graMissions;
+
 $(document).ready(function() {
-    initParams();
+    //initParams();
     createCanvasStage();
     createCards();
     setupOthers();
-    setupAnimVar();
-    startGame();
+    //setupAnimVar();
+    resetGame();
 
     //displayResult($('#result-area'), [16, 9], 2)
     setupTest();
@@ -28,105 +31,9 @@ $(document).ready(function() {
 });
 
 
-function agentPk() {
-    var configDiv = $('#test-wrapper #config-div');
-    var iter = configDiv.find('input')[0].value;
-    if (isNaN(iter)) {
-        alert('Iterations value invalid.');
-        configDiv.find('input')[0].value = '';
-        return;
-    }
-
-    var agentOptions = configDiv.find('select');
-    var agentNames = [];
-    for (var i = 0; i < agentOptions.length; ++i) {
-        if ('none' != agentOptions[i].value) {
-            agentNames.push(agentOptions[i].value);
-        }
-    }
-
-    var results = [];
-    var resultArea = $('#result-area').html('');
-    for (var i = 0; i < iter; ++i) {
-        var missions = createPKMissions(agentNames.length);
-        allMissions = missions; // Set up global var in game.js
-
-        // Create Agents
-        var agents = new Array();
-        for (var j = 0; j < agentNames.length; ++j) {
-            agents[j] = new Agent();
-            agents[j].init(agentNames[j], j, missions[j]);
-        }
-
-        // PK!!!
-        setupGame(agentNames.length, missions.slice());
-        while(1) {
-            var endingResult;
-            for (var j = 0; j < agents.length; j++) {
-                agents[j].move();
-                endingResult = askJudge();
-                if (null !== endingResult) {
-                    break;
-                }
-            }
-            if (null !== endingResult) {
-                showResult(i, endingResult);
-                results.push(endingResult);
-                //displayResult(resultArea, endingResult, i);
-                break;
-            }
-        }
-    }
-}
-
-function showResult(iter, result) {
-    var score = '';
-    for (var i = 0; i < result.length; i++) {
-        score += ('A' + (i+1) + ': ' + result[i] + ' ');
-    };
-    console.log('#', iter+1, score);
-}
 /*
-function displayResult(area, results, iter) {
-    area.html(function(idx, oldhtml) {
-        var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
-        for (var i = 0; i < results.length; i++) {
-            content += '<span>Agent&nbsp;' + i + '&nbsp;score:&nbsp;'
-                             + results[i] + '</span>';
-        };
-        return oldhtml + content + '</br>';
-    });
-}
-*/
-
-function setupTest() {
-    var pagedivs = $('.tabpage');
-
-    var tabsAnchor = $('#tabs li a');
-    tabsAnchor.first().addClass('selected');
-    tabsAnchor.on('click', function(e) {
-        e.preventDefault();
-        var $this = $(this);
-        $this.addClass('selected')
-            .parent().siblings().find('a').removeClass('selected');
-        var activeTab = $this.attr('href').slice(1);
-        pagedivs.removeClass('hide').addClass('hide');
-        $('#'+activeTab).removeClass('hide');
-
-        UI_Mode = ~~(activeTab == 'graphic');
-    });
-
-    var $configDiv = $('#config-div');
-    var $goBtn = $configDiv.find('#go-btn');
-    $goBtn.on('click', agentPk);
-    $configDiv.find('input').on('keyup', function(e) {
-        if (13 === e.keyCode) {
-            $goBtn.click();
-        }
-    });
-
-}
-
+ * Human pk Agent
+ */
 // Initialize parameters in main.js
 function initParams() {
     selectedTikiIdx = null;
@@ -143,22 +50,25 @@ function setupAnimVar() {
     animTikiHeight = tikiHeight;
 }
 
-function startGame() {
-    createTikis();
-    displayMissions(createPKMissions(2));
-    setupCards();
-    setupAnimVar();
-}
+/*function startGame() {
+    var 
+
+    setupGame(2, graMissions);
+}*/
 
 function resetGame() {
     stage.removeAllChildren();
     initParams();
 
     createTikis();
-    displayMissions(createPKMissions(2));
     setupCards();
     setupAnimVar();
-    state.init();
+    graMissions = createPKMissions(2);
+    displayMissions(graMissions);
+    setupGame(2, graMissions);
+
+    graAgent = new Agent();
+    graAgent.init($('#setting').find('select')[0].value, 1, graMissions[1]);
 }
 
 
@@ -187,30 +97,17 @@ function setupOthers() {
     $('#setting input').change(function() {
         comMissionBoard.fadeToggle();
     });
+    $('#setting').find('select').on('change', function() {
+        graAgent = new Agent();
+        graAgent.init(this.value, 1, graMissions[1]);
+    });
+    /*$('#apply-btn').click(function() {
+        var agentName = $('#setting').find('select').value;
+        graAgent = new Agent();
+        graAgent.init(agentName, 2, graMissions[1]);
+        setupGame(2, graMissions);
+    });*/
 }
-/*
-function createMissions() {
-    var naiveOrder1 = naiveOrder2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    var comMission = [], humMission = [];
-    for (var i = 0; i < 3; i++) {
-        var mission1 = naiveOrder1[Math.floor(Math.random() * naiveOrder1.length)];
-        var mission2 = naiveOrder2[Math.floor(Math.random() * naiveOrder2.length)];
-        naiveOrder1.splice(naiveOrder1.indexOf(mission1), 1);
-        naiveOrder2.splice(naiveOrder2.indexOf(mission2), 1);
-        comMission.push(mission1);
-        humMission.push(mission2);
-    }
-    if (comMission.compare(humMission)) {
-        var temp = humMission[0];
-        humMission[0] = humMission[1];
-        humMission[1] = temp;
-    }
-    state.comMission = comMission;
-    state.humMission = humMission;
-    console.log('Your mission: ' + humMission);
-
-    displayMissions(comMission, humMission);
-}*/
 
 function displayMissions(missions) {
     var orderStr = ['1st', '2nd', '3rd'];
@@ -329,7 +226,7 @@ function setupCards() {
         selectedTikiIdx = null;
 
         setTimeout(function() {
-            comAIMove();
+            graAgent.move();
         }, 1000);
     });
     cards.eq(1).text('Up 2').on('click', function() {
@@ -350,7 +247,7 @@ function setupCards() {
         selectedTikiIdx = null;
 
         setTimeout(function() {
-            comAIMove();
+            graAgent.move();
         }, 1000);
     });
     cards.eq(2).text('Up 3').on('click', function() {
@@ -371,7 +268,7 @@ function setupCards() {
         selectedTikiIdx = null;
 
         setTimeout(function() {
-            comAIMove();
+            graAgent.move();
         }, 1000);
     })
     cards.eq(3).text('Push!').on('click', function() {
@@ -381,7 +278,7 @@ function setupCards() {
             return;
         }
         updateState(3, selectedTikiIdx, 1);
-        moveToBottom(selectedTikiIdx);
+        //moveToBottom(selectedTikiIdx);
         
         $(this).css('opacity', '0.6').unbind('click');
         stage.removeChild(selectMark);
@@ -390,14 +287,14 @@ function setupCards() {
         selectedTikiIdx = null;
 
         setTimeout(function() {
-            comAIMove();
+            graAgent.move();
         }, 1000);
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
 
         updateState(4, tikis.length - 1, 1);
-        killLast();
+        //killLast();
         console.log(tikis);
         
         if (0 === killCardRemain) {
@@ -411,9 +308,114 @@ function setupCards() {
         }
 
         setTimeout(function() {
-            comAIMove();
+            graAgent.move();
         }, 1000);
     });
 }
+
+
+/*
+ * Agent PK Agent
+ */
+
+function agentPk() {
+    var configDiv = $('#test-wrapper #config-div');
+    var iter = configDiv.find('input')[0].value;
+    if (isNaN(iter)) {
+        alert('Iterations value invalid.');
+        configDiv.find('input')[0].value = '';
+        return;
+    }
+
+    var agentOptions = configDiv.find('select');
+    var agentNames = [];
+    for (var i = 0; i < agentOptions.length; ++i) {
+        if ('none' != agentOptions[i].value) {
+            agentNames.push(agentOptions[i].value);
+        }
+    }
+
+    var results = [];
+    var resultArea = $('#result-area').html('');
+    for (var i = 0; i < iter; ++i) {
+        var missions = createPKMissions(agentNames.length);
+        allMissions = missions; // Set up global var in game.js
+
+        // Create Agents
+        var agents = new Array();
+        for (var j = 0; j < agentNames.length; ++j) {
+            agents[j] = new Agent();
+            agents[j].init(agentNames[j], j, missions[j]);
+        }
+
+        // PK!!!
+        setupGame(agentNames.length, missions.slice());
+        while(1) {
+            var endingResult;
+            for (var j = 0; j < agents.length; j++) {
+                agents[j].move();
+                endingResult = askJudge();
+                if (null !== endingResult) {
+                    break;
+                }
+            }
+            if (null !== endingResult) {
+                showResult(i, endingResult);
+                results.push(endingResult);
+                //displayResult(resultArea, endingResult, i);
+                break;
+            }
+        }
+    }
+}
+
+function showResult(iter, result) {
+    var score = '';
+    for (var i = 0; i < result.length; i++) {
+        score += ('A' + (i+1) + ': ' + result[i] + ' ');
+    };
+    console.log('#', iter+1, score);
+}
+/*
+function displayResult(area, results, iter) {
+    area.html(function(idx, oldhtml) {
+        var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
+        for (var i = 0; i < results.length; i++) {
+            content += '<span>Agent&nbsp;' + i + '&nbsp;score:&nbsp;'
+                             + results[i] + '</span>';
+        };
+        return oldhtml + content + '</br>';
+    });
+}
+*/
+
+function setupTest() {
+    var pagedivs = $('.tabpage');
+
+    var tabsAnchor = $('#tabs li a');
+    tabsAnchor.first().addClass('selected');
+    tabsAnchor.on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        $this.addClass('selected')
+            .parent().siblings().find('a').removeClass('selected');
+        var activeTab = $this.attr('href').slice(1);
+        pagedivs.removeClass('hide').addClass('hide');
+        $('#'+activeTab).removeClass('hide');
+
+        UI_Mode = ~~(activeTab == 'graphic');
+    });
+
+    var $configDiv = $('#config-div');
+    var $goBtn = $configDiv.find('#go-btn2');
+    $goBtn.on('click', agentPk);
+    $configDiv.find('input').on('keyup', function(e) {
+        if (13 === e.keyCode) {
+            $goBtn.click();
+        }
+    });
+
+}
+
 
 })();

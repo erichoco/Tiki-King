@@ -27,6 +27,7 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
                 this.move = minimaxMove;
                 break;
             default:
+                console.log(agent);
                 alert('haha');
     }
 };

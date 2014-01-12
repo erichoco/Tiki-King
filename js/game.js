@@ -6,7 +6,7 @@ var playerScores = null;
 var playersNumber = null;
 var allMissions = null;
 var gameEnd = 0;
-var UI_Mode = 0;  // 0 testMode ; 1 UI_mode
+var UI_Mode = 1;  // 0 testMode ; 1 UI_mode
 
 
 // This is the 'class' of State
@@ -19,7 +19,7 @@ function State() {
 /*
  * Reset the game , prepare for the new game
  */
-function setupGame(   pNumber , playerMissions )
+function setupGame(pNumber, playerMissions)
 {
     // console.log("This is setupGame function!");
     state = new State();
@@ -49,10 +49,6 @@ function getState()
 {
     return state;
 }
-
-
-
-
 
 
 /*
@@ -109,8 +105,6 @@ function checkGameEnd()
 function askJudge()
 {
     // console.log("This is askJudge function")
-
-
     if(gameEnd == 0) {
         return null;
     }
@@ -180,8 +174,6 @@ function updateState(action, tikiIdx, player) {
 
 function updateStateWithMoveup(moveup , tikiId , targetState , playerID , actionID)
 {
-
-
     var tmp = tikiId
     var moveTime = 0
     var tikiIndex = getTikiIndex(targetState.tikiOrder, tikiId)
