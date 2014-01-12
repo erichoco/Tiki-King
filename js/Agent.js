@@ -65,7 +65,7 @@ function minimaxMove() {
 
     var bestMove = nextMoves[scores.indexOf(bestScore)];
 
-    tellJudge(this.agentNumber, bestMove.tiki, bestMove.action);
+    tellJudge(this.agentNumber, availTiki.indexOf(bestMove.tiki), bestMove.action);
 }
 
 // thisAgent is the original agent calling move function

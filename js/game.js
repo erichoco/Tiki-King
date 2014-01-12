@@ -19,7 +19,7 @@ function State() {
 /*
  * Reset the game , prepare for the new game
  */
-function setupGame(pNumber, playerMissions)
+function setupGame(pNumber, playerMissions, tikiOrder)
 {
     // console.log("This is setupGame function!");
     state = new State();
@@ -37,8 +37,8 @@ function setupGame(pNumber, playerMissions)
         state.playersAction[i] = initialAction.slice(0);
     }
 
-    initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    state.tikiOrder = initialTikiOrder.slice(0);
+    //initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    state.tikiOrder = tikiOrder;//initialTikiOrder.slice(0);
     gameEnd = 0;
 
 }
@@ -139,28 +139,30 @@ function updateState(action, tikiIdx, player) {
 
     if (action == 0) {
         updateStateWithMoveup(1,tikiId , state , player , action);
-        if(UI_Mode == 1)
+        if(UI_Mode && player)
             moveUp(tikiIdx, 1);
     }
     else if (action == 1) {
         updateStateWithMoveup(2,tikiId, state , player , action);
-        if(UI_Mode == 1)
+        if(UI_Mode && player)
             moveUp(tikiIdx, 2);
     }
     else if (action == 2) {
         updateStateWithMoveup(3,tikiId, state , player , action);
-        if(UI_Mode == 1)
+        if(UI_Mode && player)
             moveUp(tikiIdx, 3);
     }
     else if (action == 3) {
         updateStateWithPush(tikiId, state , player , action);
-        if(UI_Mode == 1)
+        if(UI_Mode && player)
             moveToBottom(tikiIdx);
     }
     else if (action == 4) {
         updateStateWithKill(state , player , action);
-        if(UI_Mode == 1)
+        if(UI_Mode && player) {
+            console.log('no');
             killLast();
+          }
     }
     else {
         console.log('ERROR: invalid "action" passed to updateState(), action:', action);

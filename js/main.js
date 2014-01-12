@@ -60,15 +60,17 @@ function resetGame() {
     stage.removeAllChildren();
     initParams();
 
-    createTikis();
-    setupCards();
-    setupAnimVar();
+    var tikiOrder = createTikiOrder();
     graMissions = createPKMissions(2);
     displayMissions(graMissions);
-    setupGame(2, graMissions);
 
+    setupGame(2, graMissions, tikiOrder);
     graAgent = new Agent();
     graAgent.init($('#setting').find('select')[0].value, 1, graMissions[1]);
+
+    createTikis(tikiOrder);
+    setupCards();
+    setupAnimVar();
 }
 
 
@@ -110,7 +112,7 @@ function setupOthers() {
 }
 
 function displayMissions(missions) {
-    var orderStr = ['1st', '2nd', '3rd'];
+    var orderStr = ['9pt', '5pt', '2pt'];
     var missionBoard = $('#mission-wrapper .mission-board:first-child');
     for (var i = 0; i < missions[0].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
@@ -123,8 +125,8 @@ function displayMissions(missions) {
     }
 }
 
-function createTikis() {
-    var tikiOrder = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+function createTikis(tikiOrder) {
+    //var tikiOrder = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
     state.tikiOrder = tikiOrder;
 
     tikis = new Array();
@@ -134,7 +136,7 @@ function createTikis() {
     var tikiY = 10;
 
     var circleMark = new createjs.Graphics();
-        circleMark.setStrokeStyle(1).beginFill('#FFFFFF').drawCircle(0, 0, 3);
+    circleMark.setStrokeStyle(1).beginFill('#FFFFFF').drawCircle(0, 0, 3);
     selectMark = new createjs.Shape(circleMark);
 
     for (var i = 0, o = tikiOrder[i]; i < tikiOrder.length; ++i, o = tikiOrder[i]) {
@@ -193,8 +195,6 @@ function createTikis() {
         });
 
         tikis.push(container);
-        /*stage.addChild(tiki);
-        stage.addChild(id);*/
         stage.addChild(container);
     }
 
@@ -211,13 +211,13 @@ function setupCards() {
             return;
         }
 
-        humanAnim = true;
+        //humanAnim = true;
+        updateState(0, selectedTikiIdx, 0);
         tikis = moveUp(selectedTikiIdx, 1);
-        updateState(0, selectedTikiIdx, 1);
 
         upCardRemain--;
         if (0 === upCardRemain) {
-            $(this).css('opacity', '0.6').unbind('click');
+            $(this).css('opacity', '0').unbind('click');
         }
 
         stage.removeChild(selectMark);
@@ -225,8 +225,11 @@ function setupCards() {
         hasSelected = false;
         selectedTikiIdx = null;
 
+        if (handleEnd()) return;
+
         setTimeout(function() {
             graAgent.move();
+            handleEnd();
         }, 1000);
     });
     cards.eq(1).text('Up 2').on('click', function() {
@@ -236,18 +239,21 @@ function setupCards() {
             return;
         }
 
-        updateState(1, selectedTikiIdx, 1);
+        updateState(1, selectedTikiIdx, 0);
         tikis = moveUp(selectedTikiIdx, 2);
 
-        $(this).css('opacity', '0.6').unbind('click');
+        $(this).css('opacity', '0').unbind('click');
 
         stage.removeChild(selectMark);
         stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
+        if (handleEnd()) return;
+
         setTimeout(function() {
             graAgent.move();
+            handleEnd();
         }, 1000);
     });
     cards.eq(2).text('Up 3').on('click', function() {
@@ -257,18 +263,21 @@ function setupCards() {
             return;
         }
 
-        updateState(2, selectedTikiIdx, 1);
+        updateState(2, selectedTikiIdx, 0);
         tikis = moveUp(selectedTikiIdx, 3);
 
-        $(this).css('opacity', '0.6').unbind('click');
+        $(this).css('opacity', '0').unbind('click');
 
         stage.removeChild(selectMark);
         stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
+        if (handleEnd()) return;
+
         setTimeout(function() {
             graAgent.move();
+            handleEnd();
         }, 1000);
     })
     cards.eq(3).text('Push!').on('click', function() {
@@ -277,28 +286,30 @@ function setupCards() {
             alert('Please select again');
             return;
         }
-        updateState(3, selectedTikiIdx, 1);
-        //moveToBottom(selectedTikiIdx);
+        updateState(3, selectedTikiIdx, 0);
+        moveToBottom(selectedTikiIdx);
         
-        $(this).css('opacity', '0.6').unbind('click');
+        $(this).css('opacity', '0').unbind('click');
         stage.removeChild(selectMark);
         stage.update();
         hasSelected = false;
         selectedTikiIdx = null;
 
+        if (handleEnd()) return;
+
         setTimeout(function() {
             graAgent.move();
+            handleEnd();
         }, 1000);
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
 
-        updateState(4, tikis.length - 1, 1);
-        //killLast();
-        console.log(tikis);
-        
+        updateState(4, tikis.length - 1, 0);
+        killLast();
+
         if (0 === killCardRemain) {
-            $(this).css('opacity', '0.6').unbind('click');
+            $(this).css('opacity', '0').unbind('click');
         }
         if (hasSelected) {
             stage.removeChild(selectMark);
@@ -307,10 +318,27 @@ function setupCards() {
             selectedTikiIdx = null;
         }
 
+        if (handleEnd()) return;
+
         setTimeout(function() {
             graAgent.move();
+            handleEnd();
         }, 1000);
     });
+}
+
+function handleEnd() {
+    var result = askJudge();
+    if (null !== result) {
+        var humScore = result[0],
+            comScore = result[1];
+        var winner = (comScore > humScore)? 'Computer' : 'You';
+        alert('Your score: ' + humScore +
+            '\nComputer\'s score: ' + comScore +
+            '\n' + winner + ' Wins');
+        return true;
+    }
+    return false;
 }
 
 
@@ -349,7 +377,7 @@ function agentPk() {
         }
 
         // PK!!!
-        setupGame(agentNames.length, missions.slice());
+        setupGame(agentNames.length, missions.slice(), createTikiOrder());
         while(1) {
             var endingResult;
             for (var j = 0; j < agents.length; j++) {

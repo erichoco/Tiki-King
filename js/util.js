@@ -70,6 +70,21 @@ function getTikiIndex(tikiOrder, tikiId)
             }
 }
 
+function createTikiOrder() {
+    var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+    var randLi1 = shuffle(naiveOrder);
+
+    var trueTikiOrder = [];
+    for (var i = 0; i < randLi1.length; i++) {
+        var randLi2 = shuffle(randLi1[i]);
+        for (var j = 0; j < randLi2.length; j++) {
+            trueTikiOrder.push(randLi2[j]);
+        }
+    }
+
+    return trueTikiOrder;
+}
+
 function createPKMissions(agentNum) {
     var missionsLi = [];
     var naiveOrder = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
