@@ -11,24 +11,50 @@ Agent.prototype.init = function(agentName, agentNumber, mission) {
     this.agentNumber = agentNumber;
     this.mission = mission;
     switch(agentName) {
-            case 'simple':
+            case 'simple-1':
                 this.eval = 1;
                 this.move = reflexMove;
                 break;
-            case 'simple2':
+            case 'simple-2':
                 this.eval = 2;
                 this.move = reflexMove;
                 break;
-            case 'minimax1':
+            case 'simple-3':
+                this.eval = 3;
+                this.move = reflexMove;
+                break;
+            case 'simple-4':
+                this.eval = 4;
+                this.move = reflexMove;
+                break;
+            case 'minimax1-1':
                 this.depth = 1;
+                this.eval = 1;
                 this.move = minimaxMove;
                 break;
-            case 'minimax2':
+            case 'minimax2-1':
                 this.depth = 2;
+                this.eval = 1;
                 this.move = minimaxMove;
                 break;
-            case 'minimax3':
+            case 'minimax3-1':
                 this.depth = 3;
+                this.eval = 1;
+                this.move = minimaxMove;
+                break;
+            case 'minimax1-2':
+                this.depth = 1;
+                this.eval = 2;
+                this.move = minimaxMove;
+                break;
+            case 'minimax2-2':
+                this.depth = 2;
+                this.eval = 2;
+                this.move = minimaxMove;
+                break;
+            case 'minimax3-2':
+                this.depth = 3;
+                this.eval = 2;
                 this.move = minimaxMove;
                 break;
             default:
@@ -63,6 +89,7 @@ function minimaxMove() {
     var depth = this.depth; // default minimax depth
     var scores = [];
     for (var i = 0; i < nextStates.length; i++) {
+
         scores.push(minimax(this, nextStates[i], depth+1, this.agentNumber, 
             -Number.MAX_VALUE, Number.MAX_VALUE));
     };
@@ -81,7 +108,15 @@ function minimax(thisAgent, currentState, depth, agentNumber, alpha, beta) {
     var legalActions = getLegalActions(currentState, agentNumber);
     //console.log(legalActions.length);
     if (!depth || !legalActions.length) {
-        var score = evaluationFunction(currentState, thisAgent.mission);
+        var score;
+        if (thisAgent.eval == 1)
+            score = evaluationFunction(currentState, thisAgent.mission);
+        else if (thisAgent.eval == 2)
+            score = evalEvalFunc(currentState, thisAgent.mission, thisAgent.agentNumber);
+        else {
+            console.log('WRONG!', eval);
+            debugger;
+        }
         //console.log(score);
         return score;
         // return evaluationFunction(currentState, thisAgent.mission)
@@ -146,6 +181,11 @@ function reflexMove() {
             tmpValue = evaluationFunction(allNextState[i], this.mission);
         else if (this.eval == 2)
             tmpValue = evalEvalFunc(allNextState[i], this.mission, this.agentNumber);
+        else if (this.eval == 3)
+            tmpValue = stupidEvalFunc(allNextState[i], this.mission);
+        else if (this.eval == 4) {
+            tmpValue = killerEvalFunc(state, allNextState[i], allNextAction[i], this.mission);
+        }
         else {
             console.log('WRONG eval!!!');
             debugger;
@@ -278,4 +318,23 @@ function evalEvalFunc(currentState, mission, playerID)
         } 
     }
     return (myValue - othersValue);
+}
+
+function stupidEvalFunc(currentState, mission)
+{
+    if (currentState.round<2) {
+        return Math.random();
+    }
+    else
+        return evaluationFunction(currentState, mission);
+}
+
+function killerEvalFunc(currentState, nextState, action, mission)
+{
+    if (mission.indexOf(currentState.tikiOrder[currentState.tikiOrder.length-1]) == -1 && action == 4) {
+        return 1000;
+    } 
+    else {
+        return evaluationFunction(nextState, mission);
+    }
 }
