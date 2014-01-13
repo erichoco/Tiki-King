@@ -138,7 +138,11 @@ function displayMissions(missions) {
     missionBoard = missionBoard.next();
     for (var i = 0; i < missions[1].length; ++i) {
         var mission = missionBoard.children(':nth-child(' + (i+2) + ')');
-        mission.html(orderStr[i] + ': ' + missions[1][i]);
+        var agentMissions = '';
+        for (var j = 1; j < missions.length; ++j) {
+            agentMissions += missions[j][i] + ' ';
+        }
+        mission.html(orderStr[i] + ': ' + agentMissions);
     }
 }
 
@@ -395,7 +399,7 @@ function handleEnd() {
         var humScore = result[0],
             comScore = result[1];
         var winner = (comScore > humScore)? 'Computer' : 'You';
-        alert('Your score: ' + humScore +
+        console.log('Your score: ' + humScore +
             '\nComputer\'s score: ' + comScore +
             '\n' + winner + ' Wins');
         return true;
