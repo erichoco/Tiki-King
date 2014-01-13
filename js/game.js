@@ -147,7 +147,7 @@ function computeResult( winner  , comScore) {
 function updateState(action, tikiIdx, player) {
     // console.log('Hey, I receive action', action, 'on Tiki #' + tikiIdx);
     // console.log('Current Order:', state.tikiOrder);
-    //console.log('Agent', player, ' action', action, ' tiki', tikiIdx);
+    // console.log('Agent', player, ' action', action, ' tiki', tikiIdx);
     var tikiId = state.tikiOrder[tikiIdx]
 
     if (action == 0) {

@@ -359,10 +359,12 @@ function stupidEvalFunc(currentState, mission)
 
 function killerEvalFunc(currentState, nextState, action, mission)
 {
-    if (mission.indexOf(currentState.tikiOrder[currentState.tikiOrder.length-1]) == -1 && action == 4) {
-        return 1000;
+    if (mission.indexOf(state.tikiOrder[state.tikiOrder.length - 1]) === -1 && 
+        state.tikiOrder.length > nextState.tikiOrder.length) {
+        return 10000 + evaluationFunction(nextState, mission);
     } 
     else {
         return evaluationFunction(nextState, mission);
     }
+
 }
