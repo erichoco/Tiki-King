@@ -73,6 +73,7 @@ function resetGame() {
     displayMissions(graMissions);
 
     setupGame(agentNames.length+1, graMissions, tikiOrder);
+    graAgent = [];
     for (var i = 0; i < agentNames.length; i++) {
         var agent = new Agent();
         agent.init(agentNames[i], i+1, graMissions[i+1]);
@@ -116,9 +117,10 @@ function setupOthers() {
         comMissionBoard.fadeToggle();
     });
     $setting.find('select[name=agent]').on('change', function() {
-        var idx = $setting.children(select).index($(this))+1;
+        resetGame();
+        /*var idx = $setting.children('select').index($(this));
         graAgent[idx] = new Agent();
-        graAgent[idx].init(this.value, idx, graMissions[idx]);
+        graAgent[idx].init(this.value, idx+1, graMissions[idx+1]);*/
     });
     $setting.find('select[name=eval]').on('change', function() {
         graAgent.setEval(this.value);
@@ -217,7 +219,9 @@ function createTikis(tikiOrder) {
 }
 
 function setupCards() {
-    var cards = $('#card-wrapper .cards').css('opacity', '');
+    var cards = $('#card-wrapper .cards').css('opacity', '').unbind('click');;
+
+    var allAgentMove; // setInterval var
 
     cards.eq(0).text('Up 1').on('click', function() {
         if (!hasSelected) return;
@@ -242,20 +246,10 @@ function setupCards() {
 
         if (handleEnd()) return;
 
-        var shouldBr = false;
-        for (var i = 0; i < graAgent.length; i++) {
-            setTimeout(function () {
-                graAgent[i].move();
-                if (handleEnd()) {
-                    shouldBr = true;
-                    return;
-                }
-            }, 1000);
-            if (shouldBr) {
-                break;
-            }
-        }
-        
+        var idx = 0;
+        allAgentMove = setInterval(function() {
+            agentMove(idx++);
+        }, 1000);
     });
     cards.eq(1).text('Up 2').on('click', function() {
         if (!hasSelected) return;
@@ -277,18 +271,26 @@ function setupCards() {
         if (handleEnd()) return;
 
         var shouldBr = false;
-        for (var i = 0; i < graAgent.length; i++) {
-            setTimeout(function () {
-                graAgent[i].move();
-                if (handleEnd()) {
-                    shouldBr = true;
-                    return;
-                }
-            }, 1000);
-            if (shouldBr) {
-                break;
-            }
-        }/*
+        //console.log(graAgent[0]);
+        //for (var i = 0; i < graAgent.length; i++) {
+            //console.log(i);
+        var idx = 0;
+        allAgentMove = setInterval(function() {
+            agentMove(idx++);
+        }, 1000);
+            // setTimeout(function () {
+            //     console.log(graAgent[i], i);
+            //     graAgent[0].move();
+            //     if (handleEnd()) {
+            //         shouldBr = true;
+            //         return;
+            //     } 
+            //     if agent
+            // }, 1000);
+            //if (shouldBr) {
+              //  break;
+            //} }
+        /*
         setTimeout(function() {
             graAgent.move();
             handleEnd();
@@ -312,20 +314,11 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
-        
-        var shouldBr = false;
-        for (var i = 0; i < graAgent.length; i++) {
-            setTimeout(function () {
-                graAgent[i].move();
-                if (handleEnd()) {
-                    shouldBr = true;
-                    return;
-                }
-            }, 1000);
-            if (shouldBr) {
-                break;
-            }
-        }
+
+        var idx = 0;
+        allAgentMove = setInterval(function() {
+            agentMove(idx++);
+        }, 1000);
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -343,8 +336,13 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
-        
-        var shouldBr = false;
+
+        var idx = 0;
+        allAgentMove = setInterval(function() {
+            agentMove(idx++);
+        }, 1000);
+
+        /*var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
@@ -356,17 +354,16 @@ function setupCards() {
             if (shouldBr) {
                 break;
             }
-        }
+        }*/
     })
     cards.eq(4).text('Kill!').on('click', function() {
+        updateState(4, tikis.length-1, 0);
+
         killCardRemain--;
-
-        updateState(4, tikis.length - 1, 0);
-        killLast();
-
         if (0 === killCardRemain) {
             $(this).css('opacity', '0').unbind('click');
         }
+
         if (hasSelected) {
             stage.removeChild(selectMark);
             stage.update();
@@ -374,22 +371,22 @@ function setupCards() {
             selectedTikiIdx = null;
         }
 
+        killLast();
         if (handleEnd()) return;
 
-        var shouldBr = false;
-        for (var i = 0; i < graAgent.length; i++) {
-            setTimeout(function () {
-                graAgent[i].move();
-                if (handleEnd()) {
-                    shouldBr = true;
-                    return;
-                }
-            }, 1000);
-            if (shouldBr) {
-                break;
-            }
-        }
+        var idx = 0;
+        allAgentMove = setInterval(function() {
+            agentMove(idx++);
+        }, 1000);
     });
+
+    function agentMove(agentIdx) {
+        graAgent[agentIdx].move();
+        if (handleEnd() || graAgent.length === agentIdx+1) {
+            clearInterval(allAgentMove);
+            return;
+        }
+    }
 }
 
 function handleEnd() {

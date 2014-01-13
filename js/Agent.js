@@ -142,7 +142,7 @@ function minimax(thisAgent, currentState, depth, agentNumber, alpha, beta) {
         for (var i = 0; i < currentScores.length; i++) {
             sum += currentScores[i];
         }
-        return Math.min.apply(null, sum/currentScores.length);
+        return sum/currentScores.length;
     }
 }
 

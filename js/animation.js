@@ -148,6 +148,7 @@ function moveToBottom(targetIdx) {
 }
 
 function killLast() {
+    
     animStage.removeChild(animTikis[animTikis.length-1]);
     animStage.update();
     animTikis.pop();
