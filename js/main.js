@@ -433,7 +433,8 @@ function agentPk() {
 
     var results = [];
 
-    //var resultArea = $('#result-area').html('');
+    var resultArea = $('#result-wrapper')
+        .html('<ul class="clearfix"></ul>');
     var win = [0, 0, 0, 0];
     for (var i = 0; i < iter; ++i) {
         var missions = createPKMissions(agentNames.length);
@@ -463,11 +464,12 @@ function agentPk() {
                 }
                 agents[j].move();
                 endingResult = askJudge();
+                console.log(endingResult);
                 if (null !== endingResult) {
                     break;
                 }
             }
-            
+            console.log();
             if (null !== endingResult) {
                 showResult(i, endingResult);
                 results.push(endingResult);
