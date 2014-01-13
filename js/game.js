@@ -7,6 +7,7 @@ var playersNumber = null;
 var allMissions = null;
 var gameEnd = 0;
 var UI_Mode = 1;  // 0 testMode ; 1 UI_mode
+var allRecord = new Array();
 
 
 // This is the 'class' of State
@@ -17,6 +18,11 @@ function State() {
     this.round = 0;
 }
 
+function stepRecord(doAction, onTiki) {
+    this.doAction = doAction;
+    this.onTiki = onTiki;
+    return this;
+}
 
 /*
  * Reset the game , prepare for the new game
@@ -39,6 +45,7 @@ function setupGame(pNumber, playerMissions, tikiOrder)
         state.playersAction[i] = initialAction.slice(0);
         state.record[i] = [];
         state.record[i][0] = -1;
+        allRecord[i] = [];
     }
 
     //initialTikiOrder  = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -175,6 +182,8 @@ function updateState(action, tikiIdx, player) {
     else {
         console.log('ERROR: invalid "action" passed to updateState(), action:', action);
     }
+    var step = new stepRecord(action, tikiId);
+    allRecord[player].push(step);
 
     // Record agent's movement
     
