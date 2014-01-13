@@ -75,7 +75,7 @@ function resetGame() {
     setupGame(agentNames.length+1, graMissions, tikiOrder);
     for (var i = 0; i < agentNames.length; i++) {
         var agent = new Agent();
-        agent.init(agentNames[i], i+1, graMissions[i+1];
+        agent.init(agentNames[i], i+1, graMissions[i+1]);
         graAgent.push(agent);
     };
     //graAgent = new Agent();
@@ -242,11 +242,18 @@ function setupCards() {
 
         if (handleEnd()) return;
 
+        var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
-                if (handleEnd()) break;
+                if (handleEnd()) {
+                    shouldBr = true;
+                    return;
+                }
             }, 1000);
+            if (shouldBr) {
+                break;
+            }
         }
         
     });
@@ -268,14 +275,20 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
+
+        var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
-                if (handleEnd()) break;
+                if (handleEnd()) {
+                    shouldBr = true;
+                    return;
+                }
             }, 1000);
-        }
- 
-/*
+            if (shouldBr) {
+                break;
+            }
+        }/*
         setTimeout(function() {
             graAgent.move();
             handleEnd();
@@ -299,17 +312,20 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
+        
+        var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
-                if (handleEnd()) break;
+                if (handleEnd()) {
+                    shouldBr = true;
+                    return;
+                }
             }, 1000);
+            if (shouldBr) {
+                break;
+            }
         }
-/*
-        setTimeout(function() {
-            graAgent.move();
-            handleEnd();
-        }, 1000);*/
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -327,17 +343,20 @@ function setupCards() {
         selectedTikiIdx = null;
 
         if (handleEnd()) return;
+        
+        var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
-                if (handleEnd()) break;
+                if (handleEnd()) {
+                    shouldBr = true;
+                    return;
+                }
             }, 1000);
+            if (shouldBr) {
+                break;
+            }
         }
-/*
-        setTimeout(function() {
-            graAgent.move();
-            handleEnd();
-        }, 1000);*/
     })
     cards.eq(4).text('Kill!').on('click', function() {
         killCardRemain--;
@@ -357,17 +376,19 @@ function setupCards() {
 
         if (handleEnd()) return;
 
+        var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
             setTimeout(function () {
                 graAgent[i].move();
-                if (handleEnd()) break;
+                if (handleEnd()) {
+                    shouldBr = true;
+                    return;
+                }
             }, 1000);
+            if (shouldBr) {
+                break;
+            }
         }
-        
-        /*setTimeout(function() {
-            graAgent.move();
-            handleEnd();
-        }, 1000);*/
     });
 }
 
