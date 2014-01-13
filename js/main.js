@@ -253,7 +253,7 @@ function setupCards() {
         var idx = 0;
         allAgentMove = setInterval(function() {
             agentMove(idx++);
-        }, 1000);
+        }, 2000);
     });
     cards.eq(1).text('Up 2').on('click', function() {
         if (!hasSelected) return;
@@ -281,7 +281,7 @@ function setupCards() {
         var idx = 0;
         allAgentMove = setInterval(function() {
             agentMove(idx++);
-        }, 1000);
+        }, 2000);
             // setTimeout(function () {
             //     console.log(graAgent[i], i);
             //     graAgent[0].move();
@@ -322,7 +322,7 @@ function setupCards() {
         var idx = 0;
         allAgentMove = setInterval(function() {
             agentMove(idx++);
-        }, 1000);
+        }, 2000);
     })
     cards.eq(3).text('Push!').on('click', function() {
         if (!hasSelected) return;
@@ -344,7 +344,7 @@ function setupCards() {
         var idx = 0;
         allAgentMove = setInterval(function() {
             agentMove(idx++);
-        }, 1000);
+        }, 2000);
 
         /*var shouldBr = false;
         for (var i = 0; i < graAgent.length; i++) {
@@ -381,7 +381,7 @@ function setupCards() {
         var idx = 0;
         allAgentMove = setInterval(function() {
             agentMove(idx++);
-        }, 1000);
+        }, 2000);
     });
 
     function agentMove(agentIdx) {
@@ -396,12 +396,31 @@ function setupCards() {
 function handleEnd() {
     var result = askJudge();
     if (null !== result) {
-        var humScore = result[0],
+        var winner = '';
+        var bestResult = 0;
+        for (var i = 0; i < result.length; i++) {
+            var agent = '';
+            if (0 === i) {
+                agent = 'Human';
+            } else {
+                agent = 'Agent' + i;
+            }
+            if (result[i] > bestResult) {
+                bestResult = result[i];
+                winner = agent;
+            }
+            else if (result[i] === bestResult) {
+                winner += ' ' + agent;
+            }
+            console.log(agent + ' score: ' + result[i]);
+        };
+        console.log(winner + ' Wins!');
+        /*var humScore = result[0],
             comScore = result[1];
         var winner = (comScore > humScore)? 'Computer' : 'You';
         console.log('Your score: ' + humScore +
             '\nComputer\'s score: ' + comScore +
-            '\n' + winner + ' Wins');
+            '\n' + winner + ' Wins');*/
         return true;
     }
     return false;
@@ -530,6 +549,9 @@ function setupTest() {
         $('#'+activeTab).removeClass('hide');
 
         UI_Mode = ~~(activeTab === 'graphic');
+        if (UI_Mode) {
+            resetGame();
+        }
     });
 
 
