@@ -497,7 +497,7 @@ function agentPk() {
                         win[k]++;
                 }
                 
-                //displayResult(resultArea, endingResult, i);
+                // displayResult(endingResult, i);
                 break;
             }
             state.round++;
@@ -511,6 +511,15 @@ function agentPk() {
     for (var n = 0; n < win.length; n++) {
         console.log('A', (n+1), 'win:', win[n]);
     }
+    $('#result-wrapper').prepend(function() {
+        var winStr = '';
+        var style = 'style="color: #8533db;font-weight: bold;"';
+        for (var i = 0; i < win.length; i++) {
+            winStr += '<p><span>Agent ' + (i+1) + '</span>';
+            winStr += '<span ' + style + '>' + win[i] + '</span></p>'
+        }
+        return winStr;
+    });
 }
 
 function showResult(iter, result) {
@@ -520,18 +529,25 @@ function showResult(iter, result) {
     };
     console.log('#', iter+1, score);
 }
+
+function displayResult(results, iter) {
+    $('#result-wrapper').prepend(function() {
+        var resultStr = ''
+        for (var i = 0; i < results.length; i++) {
+            resultStr += ' Agent' + (i+1) + ' ' + results[i];
+        };
+        return '<p>Iteration #' + iter + ': ' + resultStr + '</p>';
+    });
 /*
-function displayResult(area, results, iter) {
-    area.html(function(idx, oldhtml) {
         var content = '<span>Iter&nbsp;#' + iter + '</span></br>';
         for (var i = 0; i < results.length; i++) {
             content += '<span>Agent&nbsp;' + i + '&nbsp;score:&nbsp;'
                              + results[i] + '</span>';
         };
         return oldhtml + content + '</br>';
-    });
+    });*/
 }
-*/
+
 
 function setupTest() {
     var pagedivs = $('.tabpage');
