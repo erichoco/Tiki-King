@@ -483,7 +483,6 @@ function agentPk() {
                 }
                 agents[j].move();
                 endingResult = askJudge();
-                console.log(endingResult);
                 if (null !== endingResult) {
                     break;
                 }
