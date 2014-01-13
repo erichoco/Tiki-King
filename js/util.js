@@ -72,15 +72,15 @@ function guessTikiScore(tikiOrder, tiki)
 function getTikiIndex(tikiOrder, tikiId) 
 {
     // console.log(tikiOrder, tikiId, tikiOrder.indexOf(tikiId));
-    // return tikiOrder.indexOf(tikiId);
+    return tikiOrder.indexOf(tikiId);
     
-    var idx = 0;
-    for(var i = 0 ; i < tikiOrder.length ; i++)
-        if (tikiOrder[i] == tikiId)
-            {
-                idx = i ;
-                return idx;
-            }
+    // var idx = 0;
+    // for(var i = 0 ; i < tikiOrder.length ; i++)
+    //     if (tikiOrder[i] == tikiId)
+    //         {
+    //             idx = i ;
+    //             return idx;
+    //         }
 }
 
 function createTikiOrder() {
