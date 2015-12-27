@@ -51,7 +51,7 @@ function setupAnimVar() {
 }
 
 /*function startGame() {
-    var 
+    var
 
     setupGame(2, graMissions);
 }*/
@@ -288,7 +288,7 @@ function setupCards() {
             //     if (handleEnd()) {
             //         shouldBr = true;
             //         return;
-            //     } 
+            //     }
             //     if agent
             // }, 1000);
             //if (shouldBr) {
@@ -332,7 +332,7 @@ function setupCards() {
         }
         updateState(3, selectedTikiIdx, 0);
         moveToBottom(selectedTikiIdx);
-        
+
         $(this).css('opacity', '0').unbind('click');
         stage.removeChild(selectMark);
         stage.update();
@@ -479,7 +479,7 @@ function agentPk() {
             var endingResult;
             for (var j = 0; j < agents.length; j++) {
                 if (showStep) {
-                    plotTikiOrder();
+                    plotTikiOrder(i, j);
                 }
                 agents[j].move();
                 endingResult = askJudge();
@@ -487,7 +487,7 @@ function agentPk() {
                     break;
                 }
             }
-            console.log();
+
             if (null !== endingResult) {
                 showResult(i, endingResult);
                 results.push(endingResult);
@@ -496,7 +496,7 @@ function agentPk() {
                     if (endingResult[k]==endingResult[ind])
                         win[k]++;
                 }
-                
+
                 // displayResult(endingResult, i);
                 break;
             }
@@ -504,7 +504,7 @@ function agentPk() {
             for (var k = 0; k < playersNumber; k++) {
                 state.record[k][state.round] = -1;
             }
-            
+
         }
         //}
     }
@@ -515,10 +515,10 @@ function agentPk() {
         var winStr = '';
         var style = 'style="color: #8533db;font-weight: bold;"';
         for (var i = 0; i < win.length; i++) {
-            winStr += '<p><span>Agent ' + (i+1) + '</span>';
-            winStr += '<span ' + style + '>' + win[i] + '</span></p>'
+            winStr += '<span>Agent ' + (i+1) + '</span>';
+            winStr += '<span ' + style + '>' + win[i] + '</span>'
         }
-        return winStr;
+        return '<p style="class:clearfix">' + winStr + '</p>';
     });
 }
 
@@ -582,7 +582,7 @@ function setupTest() {
 
 }
 
-function plotTikiOrder() {
+function plotTikiOrder(iter, step) {
     var curState = getState();
     var curOrder = curState.tikiOrder;
     var $orderList = $('#result-area ul');
@@ -590,12 +590,15 @@ function plotTikiOrder() {
     var ulWidth = $orderList.width();
     $orderList.width((parseInt(ulWidth)+130) + 'px');
 
+    var iterP = '<p>' + 'Iter ' + (iter+1) + '</p>';
+    var stepP = '<p>' + 'Step ' + (step+1) + '</p>';
+
     var divEl = '';
     for (var i = 0; i < curOrder.length; i++) {
         divEl += '<div>' + curOrder[i] + '</div>\n';
     }
 
-    $orderList.append('<li>' + divEl + '</li>');//.html(curOrder);
+    $orderList.append('<li>' + iterP + stepP + divEl + '</li>');//.html(curOrder);
     var testTikis = $orderList.children('li').last().find('div');
     for (var i = 0; i < testTikis.length; i++) {
         $(testTikis[i]).css('background-color',

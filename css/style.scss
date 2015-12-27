@@ -168,12 +168,12 @@ body {
     background-color: #ffffff;
     display: block;
     span {
-        margin: 10px 30px;
+        margin: 10px 30px 10px 10px;
     }
 
     #result-wrapper {
-        margin: 10px auto;
-        width: 60%;
+        margin: 10px 10px;
+        // width: 100%;
         overflow-x: scroll;
         background-color: #ebebeb;
         border-radius: 5px;
@@ -184,10 +184,14 @@ body {
         width: 0px;
         list-style: none;
         li {
-            width: 130px;
+            width: 60px;
             float: left;
+            p {
+                padding-right: 10px;
+                text-align: right;
+            }
             div {
-                margin: 5px 50px;
+                margin: 5px 15px;
                 height: 40px;
                 float: none;
                 border: 1px solid #888888;
@@ -211,15 +215,15 @@ body {
     line-height: 0;
     height: 0;
 }
- 
+
 .clearfix {
     display: inline-block;
 }
- 
+
 html[xmlns] .clearfix {
     display: block;
 }
- 
+
 * html .clearfix {
     height: 1%;
 }
