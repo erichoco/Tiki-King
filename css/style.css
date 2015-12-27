@@ -137,10 +137,9 @@ body {
   background-color: #ffffff;
   display: block; }
   #result-area span {
-    margin: 10px 30px; }
+    margin: 10px 30px 10px 10px; }
   #result-area #result-wrapper {
-    margin: 10px auto;
-    width: 60%;
+    margin: 10px 10px;
     overflow-x: scroll;
     background-color: #ebebeb;
     border-radius: 5px; }
@@ -149,10 +148,13 @@ body {
     width: 0px;
     list-style: none; }
     #result-area ul li {
-      width: 130px;
+      width: 60px;
       float: left; }
+      #result-area ul li p {
+        padding-right: 10px;
+        text-align: right; }
       #result-area ul li div {
-        margin: 5px 50px;
+        margin: 5px 15px;
         height: 40px;
         float: none;
         border: 1px solid #888888;
@@ -178,3 +180,5 @@ html[xmlns] .clearfix {
 
 * html .clearfix {
   height: 1%; }
+
+/*# sourceMappingURL=style.css.map */
